@@ -1,3 +1,3 @@
 export const brand = {
-  name: "Naser Orderly",
+  name: "Naser Store",
 } as const;
