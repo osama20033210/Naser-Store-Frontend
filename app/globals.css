@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+:root {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.dark body {
+  background: #020617;
+  color: #e2e8f0;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+table {
+  border-collapse: collapse;
+}
+::selection {
+  background: #c7d2fe;
+  color: #312e81;
+}
