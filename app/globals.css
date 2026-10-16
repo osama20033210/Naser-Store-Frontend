@@ -116,6 +116,42 @@ body {
 main {
   min-width: 0;
 }
+.boxes-loader {
+  position: relative;
+  isolation: isolate;
+}
+.boxes-loader::before {
+  content: "";
+  position: absolute;
+  inset: 20%;
+  z-index: -1;
+  border-radius: 50%;
+  background: currentColor;
+  filter: blur(12px);
+  opacity: 0.12;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .boxes-loader > svg {
+    animation: boxes-float 2.4s ease-in-out infinite;
+  }
+  .boxes-loader path {
+    animation: boxes-highlight 2.4s ease-in-out infinite;
+  }
+  .boxes-loader path:nth-child(-n + 4) {
+    animation-delay: -1.6s;
+  }
+  .boxes-loader path:nth-child(n + 5):nth-child(-n + 8) {
+    animation-delay: -0.8s;
+  }
+}
+@keyframes boxes-float {
+  0%, 100% { transform: translateY(1px); }
+  50% { transform: translateY(-2px); }
+}
+@keyframes boxes-highlight {
+  0%, 65%, 100% { opacity: 0.4; }
+  25%, 40% { opacity: 1; }
+}
 button:not(:disabled),
 a {
   -webkit-tap-highlight-color: transparent;

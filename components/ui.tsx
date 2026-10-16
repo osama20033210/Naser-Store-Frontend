@@ -4,7 +4,7 @@ import { useLocale } from "@/components/locale-provider";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { ChevronLeft, Eye, EyeOff, Inbox, LoaderCircle, X } from "lucide-react";
+import { Boxes, ChevronLeft, Eye, EyeOff, Inbox, X } from "lucide-react";
 import {
   cloneElement,
   isValidElement,
@@ -264,6 +264,10 @@ export function Skeleton({ className }: { className?: string }) {
   );
 }
 
+export function BoxesLoader({ className }: { className?: string }) {
+  return <span aria-hidden="true" className={cn("boxes-loader inline-grid h-12 w-12 shrink-0 place-items-center text-indigo-600 dark:text-indigo-400", className)}><Boxes className="h-full w-full" strokeWidth={1.5}/></span>;
+}
+
 export function Loading() {
   const { t } = useLocale();
 
@@ -271,17 +275,10 @@ export function Loading() {
     <div
       role="status"
       aria-label={t("Loading")}
-      className="grid min-h-56 gap-5 py-6"
+      className="flex min-h-56 flex-col items-center justify-center gap-5 py-8"
     >
-      <LoaderCircle
-        className="h-7 w-7 animate-spin text-indigo-600 dark:text-indigo-400"
-        aria-label={t("Loading")}
-      />
-      <div className="grid gap-3">
-        <Skeleton className="h-8 w-2/3" />
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-      </div>
+      <div className="grid h-20 w-20 place-items-center rounded-2xl bg-indigo-50 dark:bg-indigo-500/10"><BoxesLoader/></div>
+      <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{t("Loading")}</span>
     </div>
   );
 }

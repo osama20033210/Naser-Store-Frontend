@@ -4,7 +4,7 @@ import { ThemeToggle } from "@/components/theme-provider";
 
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Boxes, LoaderCircle, ShoppingBag } from "lucide-react";
+import { Boxes, ShoppingBag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useAuth } from "@/components/providers";
-import { Button, Field, Input, PasswordInput } from "@/components/ui";
+import { BoxesLoader, Button, Field, Input, PasswordInput } from "@/components/ui";
 import { brand } from "@/lib/brand";
 
 const schema = z.object({
@@ -96,7 +96,7 @@ export default function LoginPage() {
             </Field>
             <Button disabled={isSubmitting}>
               {isSubmitting && (
-                <LoaderCircle className="h-4 w-4 animate-spin" />
+                <BoxesLoader className="h-4 w-4 text-current dark:text-current" />
               )}
               {t("Sign in")} </Button>
             <p className="text-center text-sm text-slate-500 dark:text-slate-400">{t("New customer?")} <Link href="/register" className="font-semibold text-indigo-600 dark:text-indigo-400">{t("Create an account")}</Link></p>
