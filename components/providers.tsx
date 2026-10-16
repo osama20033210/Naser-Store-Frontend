@@ -1,4 +1,6 @@
 "use client";
+import { useLocale } from "@/components/locale-provider";
+
 
 import {
   QueryClient,
@@ -36,6 +38,8 @@ function clearAccountData(queryClient: QueryClient) {
 }
 
 function AuthProvider({ children }: { children: ReactNode }) {
+  const { t, errorText } = useLocale();
+
   const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ["me"],
@@ -74,9 +78,9 @@ function AuthProvider({ children }: { children: ReactNode }) {
         } catch (error) {
           if (!(error instanceof ApiError && error.status === 401)) {
             toast.error(
-              error instanceof Error
+              errorText(error instanceof Error
                 ? error.message
-                : "Sign out failed. Please try again.",
+                : t("Sign out failed. Please try again.")),
             );
             return;
           }
@@ -94,12 +98,14 @@ function AuthProvider({ children }: { children: ReactNode }) {
       },
       refreshUser: () => query.refetch(),
     }),
-    [user, query.isLoading, query.refetch, queryClient],
+    [user, query.isLoading, query.refetch, queryClient, t, errorText],
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function Providers({ children }: { children: ReactNode }) {
+  const { locale } = useLocale();
+
   const [client] = useState(
     () =>
       new QueryClient({
@@ -112,7 +118,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={client}>
       <AuthProvider><CartProvider>{children}</CartProvider></AuthProvider>
-      <Toaster richColors position="top-right" />
+      <Toaster richColors dir={locale === "ar" ? "rtl" : "ltr"} position={locale === "ar" ? "top-left" : "top-right"} />
     </QueryClientProvider>
   );
 }

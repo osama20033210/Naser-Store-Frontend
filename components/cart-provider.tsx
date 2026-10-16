@@ -1,5 +1,7 @@
 "use client";
 
+
+
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { CartItem } from "@/lib/store-types";
 
@@ -7,6 +9,8 @@ const STORAGE_KEY="naser-orderly-cart";
 const CartContext=createContext<{items:CartItem[];ready:boolean;count:number;add:(id:number,quantity?:number,limit?:number)=>boolean;setQuantity:(id:number,quantity:number)=>void;remove:(id:number)=>void;clear:()=>void}|null>(null);
 
 export function CartProvider({children}:{children:ReactNode}){
+  
+
  const [items,setItems]=useState<CartItem[]>([]),[ready,setReady]=useState(false);
  useEffect(()=>{
   try{

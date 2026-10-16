@@ -1,4 +1,8 @@
 "use client";
+import { useLocale } from "@/components/locale-provider";
+
 import Link from "next/link";
 import { CustomerGate } from "@/components/store-shell";
-export default function Layout({children}:{children:React.ReactNode}){return <CustomerGate><nav aria-label="Customer account" className="mb-7 flex gap-5 border-b border-slate-200 pb-4 text-sm font-semibold text-indigo-600"><Link href="/account/orders">My orders</Link><Link href="/account">Profile & delivery details</Link></nav>{children}</CustomerGate>}
+export default function Layout({children}:{children:React.ReactNode}){
+  const { t } = useLocale();
+return <CustomerGate><nav aria-label={t("Customer account")} className="mb-7 flex gap-5 border-b border-slate-200 pb-4 text-sm font-semibold text-indigo-600"><Link href="/account/orders">{t("My orders")}</Link><Link href="/account">{t("Profile & delivery details")}</Link></nav>{children}</CustomerGate>}

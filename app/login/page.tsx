@@ -1,4 +1,6 @@
 "use client";
+import { useLocale, LanguageSwitcher } from "@/components/locale-provider";
+
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Boxes, LoaderCircle, ShieldCheck } from "lucide-react";
@@ -18,6 +20,8 @@ const schema = z.object({
 });
 type Values = z.infer<typeof schema>;
 export default function LoginPage() {
+  const { t, errorText } = useLocale();
+
   const auth = useAuth(),
     router = useRouter();
   const {
@@ -36,7 +40,7 @@ export default function LoginPage() {
     try {
       await auth.login(values.email, values.password);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Sign in failed");
+      toast.error(errorText(error instanceof Error ? error.message : t("Sign in failed")));
     }
   });
   return (
@@ -51,45 +55,38 @@ export default function LoginPage() {
         </div>
         <div className="relative max-w-lg">
           <p className="text-5xl font-black leading-tight">
-            Every order.
-            <br />
-            Every movement.
-            <br />
-            <span className="text-indigo-300">Under control.</span>
+            {t("Every order.")} <br />
+            {t("Every movement.")} <br />
+            <span className="text-indigo-300">{t("Under control.")}</span>
           </p>
           <p className="mt-6 text-lg text-slate-300">
-            A secure operations workspace for teams that care about inventory
-            accuracy.
-          </p>
+            {t("A secure operations workspace for teams that care about inventory accuracy.")} </p>
         </div>
         <p className="relative flex items-center gap-2 text-sm text-slate-400">
-          <ShieldCheck className="h-4 w-4" /> Secure cookie authentication ·
-          role based access
-        </p>
+          <ShieldCheck className="h-4 w-4" /> {t("Secure cookie authentication · role based access")} </p>
       </section>
       <section className="grid place-items-center p-6">
         <form onSubmit={submit} className="w-full max-w-sm">
+          <div className="mb-6 flex justify-end"><LanguageSwitcher/></div>
           <div className="mb-8 lg:hidden">
             <div className="flex items-center gap-2 text-xl font-bold">
               <Boxes className="text-indigo-600" /> {brand.name}
             </div>
           </div>
           <p className="text-sm font-semibold uppercase tracking-[.2em] text-indigo-600">
-            Operations portal
-          </p>
-          <h1 className="mt-2 text-3xl font-black">Welcome back</h1>
+            {t("Operations portal")} </p>
+          <h1 className="mt-2 text-3xl font-black">{t("Welcome back")}</h1>
           <p className="mt-2 text-sm text-slate-500">
-            Sign in to manage your orders or access your team workspace.
-          </p>
+            {t("Sign in to manage your orders or access your team workspace.")} </p>
           <div className="mt-8 grid gap-5">
-            <Field label="Email" error={errors.email?.message}>
+            <Field label={t("Email")} error={errors.email?.message}>
               <Input
                 type="email"
                 autoComplete="username"
                 {...register("email")}
               />
             </Field>
-            <Field label="Password" error={errors.password?.message}>
+            <Field label={t("Password")} error={errors.password?.message}>
               <Input
                 type="password"
                 autoComplete="current-password"
@@ -100,10 +97,9 @@ export default function LoginPage() {
               {isSubmitting && (
                 <LoaderCircle className="h-4 w-4 animate-spin" />
               )}
-              Sign in
-            </Button>
-            <p className="text-center text-sm text-slate-500">New customer? <Link href="/register" className="font-semibold text-indigo-600">Create an account</Link></p>
-            <Link href="/shop" className="text-center text-sm text-indigo-600">Continue browsing the store</Link>
+              {t("Sign in")} </Button>
+            <p className="text-center text-sm text-slate-500">{t("New customer?")} <Link href="/register" className="font-semibold text-indigo-600">{t("Create an account")}</Link></p>
+            <Link href="/shop" className="text-center text-sm text-indigo-600">{t("Continue browsing the store")}</Link>
           </div>
         </form>
       </section>

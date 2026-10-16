@@ -1,4 +1,6 @@
 "use client";
+import { useLocale } from "@/components/locale-provider";
+
 
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -18,7 +20,6 @@ import {
 } from "@/components/data";
 import { Badge, Card, Empty, Loading } from "@/components/ui";
 import { api } from "@/lib/api";
-import { money, dateTime } from "@/lib/format";
 import type { Order, Product, Resource } from "@/lib/types";
 
 type Dashboard = {
@@ -33,6 +34,8 @@ type Dashboard = {
   low_stock_products: Product[];
 };
 export default function DashboardPage() {
+  
+
   return (
     <RequirePermission permission="dashboard.view">
       <DashboardContent />
@@ -40,6 +43,8 @@ export default function DashboardPage() {
   );
 }
 function DashboardContent() {
+  const { t, money, dateTime } = useLocale();
+
   const query = useQuery({
     queryKey: ["dashboard"],
     queryFn: () => api<Resource<Dashboard>>("/dashboard"),
@@ -52,25 +57,25 @@ function DashboardContent() {
     max = Math.max(...d.revenue_trends.map((r) => Number(r.revenue_minor)), 1);
   const metrics = [
     {
-      label: "Total orders",
+      label: t("Total orders"),
       value: d.total_orders,
       icon: ShoppingBag,
       color: "text-indigo-600 bg-indigo-50",
     },
     {
-      label: "Completed revenue",
+      label: t("Completed revenue"),
       value: money(d.revenue_minor),
       icon: DollarSign,
       color: "text-emerald-600 bg-emerald-50",
     },
     {
-      label: "Pending orders",
+      label: t("Pending orders"),
       value: d.pending_orders,
       icon: Clock3,
       color: "text-amber-600 bg-amber-50",
     },
     {
-      label: "Completed orders",
+      label: t("Completed orders"),
       value: d.completed_orders,
       icon: CircleCheck,
       color: "text-cyan-600 bg-cyan-50",
@@ -79,8 +84,8 @@ function DashboardContent() {
   return (
     <>
       <PageHeading
-        title="Business overview"
-        description="A live view of your orders, revenue, and inventory."
+        title={t("Business overview")}
+        description={t("A live view of your orders, revenue, and inventory.")}
       />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map(({ label, value, icon: Icon, color }) => (
@@ -89,10 +94,10 @@ function DashboardContent() {
               <span className={`rounded-xl p-3 ${color}`}>
                 <Icon className="h-5 w-5" />
               </span>
-              <span className="text-xs text-slate-400">All time</span>
+              <span className="text-xs text-slate-400">{t("All time")}</span>
             </div>
             <p className="mt-5 text-3xl font-black">{value}</p>
-            <p className="mt-1 text-sm text-slate-500">{label}</p>
+            <p className="mt-1 text-sm text-slate-500">{t(String(label))}</p>
           </Card>
         ))}
       </div>
@@ -100,12 +105,11 @@ function DashboardContent() {
         <Card>
           <div className="flex justify-between">
             <div>
-              <h2 className="font-bold">Revenue trend</h2>
+              <h2 className="font-bold">{t("Revenue trend")}</h2>
               <p className="mt-1 text-xs text-slate-500">
-                Completed orders · last 30 days by order creation date
-              </p>
+                {t("Completed orders · last 30 days by order creation date")} </p>
             </div>
-            <Badge tone="indigo">USD</Badge>
+            <Badge tone="indigo">{t("USD")}</Badge>
           </div>
           {d.revenue_trends.length ? (
             <div className="mt-8 flex h-48 items-end gap-2 overflow-x-auto border-b border-slate-200">
@@ -127,13 +131,13 @@ function DashboardContent() {
             </div>
           ) : (
             <Empty
-              title="Revenue will appear here"
-              detail="Complete an order to start tracking revenue."
+              title={t("Revenue will appear here")}
+              detail={t("Complete an order to start tracking revenue.")}
             />
           )}
         </Card>
         <Card>
-          <h2 className="font-bold">Order distribution</h2>
+          <h2 className="font-bold">{t("Order distribution")}</h2>
           <div className="mt-6 grid gap-4">
             {[
               "pending",
@@ -144,7 +148,7 @@ function DashboardContent() {
             ].map((status) => (
               <div key={status}>
                 <div className="mb-2 flex justify-between text-sm">
-                  <span className="capitalize">{status}</span>
+                  <span className="capitalize">{t(String(status))}</span>
                   <span className="font-semibold">
                     {d.status_distribution[status] ?? 0}
                   </span>
@@ -165,20 +169,19 @@ function DashboardContent() {
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.7fr_1fr]">
         <Card>
           <div className="mb-3 flex justify-between">
-            <h2 className="font-bold">Recent orders</h2>
+            <h2 className="font-bold">{t("Recent orders")}</h2>
             <Link
               href="/dashboard/orders"
               className="flex items-center gap-1 text-sm font-semibold text-indigo-600"
             >
-              View all
-              <ArrowUpRight className="h-4 w-4" />
+              {t("View all")} <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
           <DataTable
             rows={d.recent_orders}
             columns={[
               {
-                label: "Order",
+                label: t("Order"),
                 render: (o) => (
                   <Link
                     className="font-semibold text-indigo-600"
@@ -188,9 +191,9 @@ function DashboardContent() {
                   </Link>
                 ),
               },
-              { label: "Customer", render: (o) => o.customer?.name },
+              { label: t("Customer"), render: (o) => o.customer?.name },
               {
-                label: "Status",
+                label: t("Status"),
                 render: (o) => (
                   <Badge
                     tone={
@@ -205,8 +208,8 @@ function DashboardContent() {
                   </Badge>
                 ),
               },
-              { label: "Total", render: (o) => money(o.total_minor) },
-              { label: "Created", render: (o) => dateTime(o.created_at) },
+              { label: t("Total"), render: (o) => money(o.total_minor) },
+              { label: t("Created"), render: (o) => dateTime(o.created_at) },
             ]}
           />
         </Card>
@@ -214,9 +217,8 @@ function DashboardContent() {
           <div className="flex items-center justify-between">
             <h2 className="flex items-center gap-2 font-bold">
               <TriangleAlert className="h-4 w-4 text-amber-500" />
-              Low stock
-            </h2>
-            <Badge tone="amber">{d.low_stock_count} products</Badge>
+              {t("Low stock")} </h2>
+            <Badge tone="amber">{d.low_stock_count} {t("products")}</Badge>
           </div>
           <div className="mt-5 grid gap-4">
             {d.low_stock_products.map((p) => (
@@ -230,14 +232,13 @@ function DashboardContent() {
                   <p className="mt-1 text-xs text-slate-500">{p.sku}</p>
                 </div>
                 <Badge tone={p.stock === 0 ? "red" : "amber"}>
-                  {p.stock} left
-                </Badge>
+                  {p.stock} {t("left")} </Badge>
               </Link>
             ))}
             {!d.low_stock_products.length && (
               <Empty
-                title="Stock looks healthy"
-                detail="No products are below their threshold."
+                title={t("Stock looks healthy")}
+                detail={t("No products are below their threshold.")}
               />
             )}
           </div>

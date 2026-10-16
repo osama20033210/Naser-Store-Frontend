@@ -33,3 +33,20 @@ table {
   background: #c7d2fe;
   color: #312e81;
 }
+
+/* Direction follows the selected language, including directional navigation icons. */
+[dir="rtl"] .lucide-arrow-left,
+[dir="rtl"] .lucide-chevron-right,
+[dir="rtl"] .lucide-arrow-up-right {
+  transform: scaleX(-1);
+}
+
+html[lang="ar"] body {
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+html[lang="ar"] .tracking-widest,
+html[lang="ar"] .tracking-wide,
+html[lang="ar"] .tracking-\[\.2em\] {
+  letter-spacing: normal;
+}

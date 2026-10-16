@@ -1,4 +1,6 @@
 "use client";
+import { useLocale, LanguageSwitcher } from "@/components/locale-provider";
+
 
 import {
   Boxes,
@@ -65,6 +67,8 @@ const links = [
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 export function AppShell({ children }: { children: ReactNode }) {
+  const { t } = useLocale();
+
   const { user, loading, can, logout } = useAuth(),
     router = useRouter(),
     path = usePathname();
@@ -87,12 +91,12 @@ export function AppShell({ children }: { children: ReactNode }) {
         <button
           className="fixed inset-0 z-30 bg-slate-950/50 lg:hidden"
           onClick={() => setOpen(false)}
-          aria-label="Close menu"
+          aria-label={t("Close menu")}
         />
       )}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-[250px] flex-col bg-slate-950 p-4 text-slate-300 transition-transform lg:sticky lg:top-0 lg:h-screen",
+          "fixed inset-y-0 start-0 z-40 flex w-[250px] flex-col bg-slate-950 p-4 text-slate-300 transition-transform lg:sticky lg:top-0 lg:h-screen",
           open ? "translate-x-0" : "hidden lg:flex lg:translate-x-0",
         )}
       >
@@ -106,7 +110,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
             {brand.name}
           </Link>
-          <button className="lg:hidden" aria-label="Close navigation" onClick={() => setOpen(false)}>
+          <button className="lg:hidden" aria-label={t("Close navigation")} onClick={() => setOpen(false)}>
             <X />
           </button>
         </div>
@@ -127,12 +131,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                 )}
               >
                 <Icon className="h-4 w-4" />
-                {label}
+                {t(label)}
               </Link>
             ))}
         </nav>
         <div className="mt-auto rounded-2xl bg-white/5 p-3">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="grid h-9 w-9 place-items-center rounded-xl bg-indigo-500 font-bold text-white">
               {user.name.slice(0, 1).toUpperCase()}
             </div>
@@ -141,7 +145,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 {user.name}
               </p>
               <p className="truncate text-xs text-slate-400">
-                {user.roles.join(", ")}
+                {user.roles.map(role => t(role)).join("، ")}
               </p>
             </div>
           </div>
@@ -149,36 +153,35 @@ export function AppShell({ children }: { children: ReactNode }) {
             onClick={logout}
             className="mt-3 flex w-full items-center gap-2 rounded-lg px-2 py-2 text-xs hover:bg-white/5"
           >
-            <LogOut className="h-4 w-4" /> Sign out
-          </button>
+            <LogOut className="h-4 w-4" /> {t("Sign out")} </button>
         </div>
       </aside>
       <div className="min-w-0">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/90 px-4 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 md:px-8">
-          <div className="flex items-center gap-3">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-2 border-b border-slate-200 bg-white/90 px-4 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 md:px-8">
+          <div className="flex min-w-0 items-center gap-3">
             <button
               className="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden"
               onClick={() => setOpen(true)}
-                aria-label="Open navigation"
+                aria-label={t("Open navigation")}
                 aria-expanded={open}
             >
               <Menu />
             </button>
-            <div className="flex items-center gap-2 text-sm text-slate-500">
-              <ShoppingBasket className="h-4 w-4" />
-              <ChevronRight className="h-3 w-3" />
-              <span className="font-semibold text-slate-900 dark:text-slate-100">
-                {current?.label ?? "Workspace"}
+            <div className="flex min-w-0 items-center gap-2 text-sm text-slate-500">
+              <ShoppingBasket className="hidden h-4 w-4 sm:block" />
+              <ChevronRight className="hidden h-3 w-3 sm:block" />
+              <span className="truncate font-semibold text-slate-900 dark:text-slate-100">
+                {t(current?.label ?? "Workspace")}
               </span>
             </div>
           </div>
-          <button
+          <div className="flex items-center gap-2"><LanguageSwitcher/><button
             className="rounded-xl border border-slate-200 p-2 dark:border-slate-700"
             onClick={() => setDark((v) => !v)}
-            aria-label="Toggle theme"
+            aria-label={t("Toggle theme")}
           >
             {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
+          </button></div>
         </header>
         <main className="p-4 md:p-8">{children}</main>
       </div>

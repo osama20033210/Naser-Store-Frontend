@@ -1,4 +1,6 @@
 "use client";
+import { useLocale } from "@/components/locale-provider";
+
 
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
@@ -25,6 +27,8 @@ export function PageHeading({
   description: string;
   action?: ReactNode;
 }) {
+  
+
   return (
     <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
       <div>
@@ -44,19 +48,20 @@ export function ErrorState({
   error: unknown;
   retry?: () => void;
 }) {
+  const { t, errorText } = useLocale();
+
   return (
     <Card>
       <p className="font-semibold text-rose-600">
         {error instanceof ApiError && error.status === 403
-          ? "You do not have permission to access this page."
+          ? t("You do not have permission to access this page.")
           : error instanceof Error
-            ? error.message
-            : "Unable to load data."}
+            ? errorText(error.message)
+            : t("Unable to load data.")}
       </p>
       {retry && (
         <Button className="mt-4" onClick={retry}>
-          Try again
-        </Button>
+          {t("Try again")} </Button>
       )}
     </Card>
   );
@@ -68,6 +73,8 @@ export function RequirePermission({
   permission: string;
   children: ReactNode;
 }) {
+  
+
   const auth = useAuth();
   return auth.can(permission) ? (
     children
@@ -85,15 +92,17 @@ export function DataTable<T extends { id: number }>({
   columns: Column<T>[];
   emptyTitle?: string;
 }) {
+  const { t } = useLocale();
+
   if (!rows.length) return <Empty title={emptyTitle} />;
   return (
     <div className="overflow-x-auto">
-      <table className="w-full whitespace-nowrap text-left text-sm">
+      <table className="w-full whitespace-nowrap text-start text-sm">
         <thead>
           <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500 dark:border-slate-800">
             {columns.map((c, i) => (
               <th key={i} className="px-3 py-4 font-semibold">
-                {c.label}
+                {t(c.label)}
               </th>
             ))}
           </tr>
@@ -136,6 +145,8 @@ export function Lookup({
   selectedLabel?: string;
   activeOnly?: boolean;
 }) {
+  const { t } = useLocale();
+
   const [q, setQ] = useState(""),
     [page, setPage] = useState(1),
     id = useId();
@@ -152,15 +163,15 @@ export function Lookup({
   return (
     <div className="grid gap-2">
       <label htmlFor={id} className="text-sm font-medium">
-        {label}
+        {t(label)}
       </label>
       <div className="relative">
-        <Search className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
+        <Search className="absolute start-3 top-3.5 h-4 w-4 text-slate-400" />
         <Input
           id={id}
           value={q}
-          placeholder={`Search ${resource}`}
-          className="pl-9"
+          placeholder={t("Search {name}", { name: t(resource) })}
+          className="ps-9"
           onChange={(e) => {
             setQ(e.target.value);
             setPage(1);
@@ -168,16 +179,16 @@ export function Lookup({
         />
       </div>
       <Select
-        aria-label={`Choose ${label}`}
+        aria-label={t("Select {name}", { name: t(label) })}
         value={value || ""}
         onChange={(e) => {
           const row = rows.find((r) => r.id === Number(e.target.value));
           if (row) onChange(row.id, row);
         }}
       >
-        <option value="">Select {label.toLowerCase()}</option>
+        <option value="">{t("Select {name}", { name: t(label) })}</option>
         {value && !rows.some((r) => r.id === value) && (
-          <option value={value}>{selectedLabel ?? `Selected #${value}`}</option>
+          <option value={value}>{selectedLabel ?? t("Selected #{id}", { id: value })}</option>
         )}
         {rows.map((row) => (
           <option key={row.id} value={row.id}>
@@ -187,10 +198,10 @@ export function Lookup({
         ))}
       </Select>
       {query.isLoading && (
-        <span className="text-xs text-slate-500">Loading options…</span>
+        <span className="text-xs text-slate-500">{t("Loading options…")}</span>
       )}
       {query.isError && (
-        <span className="text-xs text-rose-600">Could not load options.</span>
+        <span className="text-xs text-rose-600">{t("Could not load options.")}</span>
       )}
       {query.data && query.data.meta.last_page > 1 && (
         <Pagination
