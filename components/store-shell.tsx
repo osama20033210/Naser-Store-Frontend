@@ -18,7 +18,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950">
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
-        <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-6 lg:grid-cols-[auto_minmax(180px,1fr)_auto_auto]">
+        <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
           <Link
             href="/shop"
             className="flex shrink-0 items-center gap-2 text-lg font-bold tracking-tight text-slate-950 dark:text-slate-100"
@@ -28,14 +28,13 @@ export function StoreShell({ children }: { children: ReactNode }) {
             </span>
             {brand.name}
           </Link>
-          <div className="order-2 flex justify-end gap-2 lg:order-4"><LanguageSwitcher/><ThemeToggle/></div>
-          <form action="/shop" method="get" role="search" className="relative order-3 min-w-0 lg:order-2">
-            <Input name="q" aria-label={t("Search store products")} placeholder={t("Search products…")} className="pe-12" maxLength={100}/>
-            <button type="submit" aria-label={t("Search products")} className="absolute inset-y-0 end-0 grid w-11 place-items-center rounded-e-xl text-slate-500"><Search className="h-4 w-4"/></button>
-          </form>
+          <div className="order-2 flex justify-end gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
           <nav
             aria-label={t("Store navigation")}
-            className="order-4 flex items-center justify-end gap-2 text-sm lg:order-3"
+            className="order-3 col-span-2 flex items-center justify-end gap-2 text-sm lg:col-span-1"
           >
             <Link
               href="/cart"
@@ -50,7 +49,11 @@ export function StoreShell({ children }: { children: ReactNode }) {
             {auth.user ? (
               <>
                 <Link
-                  aria-label={t(auth.user.account_type === "customer" ? "My account" : "Team workspace")}
+                  aria-label={t(
+                    auth.user.account_type === "customer"
+                      ? "My account"
+                      : "Team workspace",
+                  )}
                   className="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-2 font-semibold leading-none text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 sm:px-4"
                   href={
                     auth.user.account_type === "customer"
@@ -77,12 +80,17 @@ export function StoreShell({ children }: { children: ReactNode }) {
                 </Button>
               </>
             ) : (
-              <Button asChild variant="outline" className="px-3 sm:px-4"><Link href="/login">{t("Sign in")}</Link></Button>
+              <Button asChild variant="outline" className="px-3 sm:px-4">
+                <Link href="/login">{t("Sign in")}</Link>
+              </Button>
             )}
           </nav>
         </div>
       </header>
-      <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+      <main
+        id="main-content"
+        className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6"
+      >
         {children}
       </main>
       <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">

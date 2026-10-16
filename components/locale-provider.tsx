@@ -9,7 +9,6 @@ import {
   type ReactNode,
 } from "react";
 import { usePathname } from "next/navigation";
-import { Languages } from "lucide-react";
 import { brand } from "@/lib/brand";
 import { money, dateTime } from "@/lib/format";
 import {
@@ -51,8 +50,8 @@ export function LocaleProvider({
       t: (key: string, values?: TranslationValues) =>
         translate(locale, key, values),
       errorText: (message: string) => translateError(locale, message),
-    money: (minor: number) => money(minor, locale),
-    dateTime: (value: string) => dateTime(value, locale),
+      money: (minor: number) => money(minor, locale),
+      dateTime: (value: string) => dateTime(value, locale),
     }),
     [locale],
   );
@@ -83,7 +82,53 @@ export function LanguageSwitcher() {
       aria-label={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}
       className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold leading-none text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-800"
     >
-      <Languages aria-hidden="true" className="hidden h-4 w-4 sm:block" />
+      {locale === "ar" ? (
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 76 40"
+          className="h-4 w-6 shrink-0 overflow-hidden rounded-sm"
+        >
+          <rect width="76" height="40" fill="#fff" />
+          {Array.from({ length: 7 }, (_, row) => (
+            <rect
+              key={row}
+              y={(row * 80) / 13}
+              width="76"
+              height={40 / 13}
+              fill="#b22234"
+            />
+          ))}
+          <rect width="30.4" height={280 / 13} fill="#3c3b6e" />
+          {Array.from({ length: 9 }, (_, row) =>
+            Array.from({ length: row % 2 === 0 ? 6 : 5 }, (_, col) => (
+              <path
+                key={`${row}-${col}`}
+                d="M0 -1.25 .28 -.39 1.19 -.39 .45 .15 .73 1.01 0 .48 -.73 1.01 -.45 .15 -1.19 -.39 -.28 -.39Z"
+                transform={`translate(${((col + 1) * 30.4) / 7 + (row % 2 ? 30.4 / 14 : 0)} ${((row + 1) * 28) / 13})`}
+                fill="#fff"
+              />
+            )),
+          )}
+        </svg>
+      ) : (
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 60 40"
+          className="h-4 w-6 shrink-0 overflow-hidden rounded-sm"
+        >
+          <path fill="#007a3d" d="M0 0h60v13.333H0z" />
+          <path fill="#fff" d="M0 13.333h60v13.334H0z" />
+          <path fill="#000" d="M0 26.667h60V40H0z" />
+          {[15, 30, 45].map((x) => (
+            <path
+              key={x}
+              d="M0 -5 1.12 -1.55 4.76 -1.55 1.82 .59 2.94 4.05 0 1.91 -2.94 4.05 -1.82 .59 -4.76 -1.55 -1.12 -1.55Z"
+              transform={`translate(${x} 20)`}
+              fill="#ce1126"
+            />
+          ))}
+        </svg>
+      )}
       {locale === "ar" ? "English" : "العربية"}
     </button>
   );
