@@ -4,7 +4,7 @@ import { useLocale } from "@/components/locale-provider";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { Eye, EyeOff, Inbox, LoaderCircle, X } from "lucide-react";
+import { ChevronLeft, Eye, EyeOff, Inbox, LoaderCircle, X } from "lucide-react";
 import {
   cloneElement,
   isValidElement,
@@ -345,35 +345,21 @@ export function Pagination({
   last: number;
   onPage: (page: number) => void;
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const total = Math.max(last, 1);
+  const format = new Intl.NumberFormat(locale);
+  const numbers = (compact: boolean): (number | string)[] => {
+    const pages = [...new Set([1, total, page, ...(compact ? [] : [page - 1, page + 1])])]
+      .filter(value => value >= 1 && value <= total).sort((a, b) => a - b);
+    return pages.flatMap((value, index) => index > 0 && value - pages[index - 1] > 1 ? [`gap-${value}`, value] : [value]);
+  };
 
-  return (
-    <nav
-      aria-label={t("Pagination")}
-      className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 text-sm dark:border-slate-800"
-    >
-      <span>
-        {t("Page")} {page} {t("of")} {Math.max(last, 1)}
-      </span>
-      <div className="flex gap-2">
-        <Button
-          type="button"
-          className="h-9 bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-          disabled={page <= 1}
-          onClick={() => onPage(page - 1)}
-        >
-          {t("Previous")}{" "}
-        </Button>
-        <Button
-          type="button"
-          variant="secondary"
-          className="h-9"
-          disabled={page >= last}
-          onClick={() => onPage(page + 1)}
-        >
-          {t("Next")}{" "}
-        </Button>
-      </div>
-    </nav>
-  );
+  return <nav aria-label={t("Pagination")} className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-4 text-sm dark:border-slate-800 sm:flex-row">
+    <p className="shrink-0 text-slate-500 dark:text-slate-400">{t("Page")} <span className="font-semibold text-slate-900 dark:text-slate-100">{format.format(page)}</span> {t("of")} {format.format(total)}</p>
+    <div className="flex items-center gap-1">
+      <Button type="button" variant="outline" size="icon" aria-label={t("Previous")} title={t("Previous")} disabled={page <= 1} onClick={() => onPage(Math.min(page - 1, total))}><ChevronLeft aria-hidden="true" className="rtl:rotate-180"/></Button>
+      {[true, false].map(compact => <div key={String(compact)} className={cn("items-center gap-1", compact ? "flex sm:hidden" : "hidden sm:flex")}>{numbers(compact).map(value => typeof value === "number" ? <Button key={value} type="button" size="icon" variant={value === page ? "default" : "ghost"} aria-current={value === page ? "page" : undefined} aria-label={t("Page {page}", {page:format.format(value)})} onClick={() => {if(value !== page)onPage(value)}} className="tabular-nums">{format.format(value)}</Button> : <span key={value} aria-hidden="true" className="w-4 text-center text-slate-400">…</span>)}</div>)}
+      <Button type="button" variant="outline" size="icon" aria-label={t("Next")} title={t("Next")} disabled={page >= total} onClick={() => onPage(page + 1)}><ChevronLeft aria-hidden="true" className="ltr:rotate-180"/></Button>
+    </div>
+  </nav>;
 }

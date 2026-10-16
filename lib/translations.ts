@@ -1,5 +1,6 @@
 /** Interface copy only. Catalog and customer data are never translated automatically. */
 export const arabic: Record<string, string> = {
+  "Page {page}": "الصفحة {page}",
   "Edit product": "تعديل المنتج",
   "New product": "منتج جديد",
   "Update product details, image and availability.": "حدّث بيانات المنتج وصورته وإعدادات ظهوره في المتجر.",
