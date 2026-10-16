@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 
 // Source-owned shadcn/ui Radix pattern, styled for this application's palette.
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold leading-none transition [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 disabled:pointer-events-none disabled:opacity-50",
   { variants: {
     variant: {
       default: "bg-indigo-600 text-white shadow-sm hover:bg-indigo-500",
@@ -29,7 +29,7 @@ export const buttonVariants = cva(
       ghost: "hover:bg-slate-100 dark:hover:bg-slate-800",
       link: "text-indigo-600 underline-offset-4 hover:underline dark:text-indigo-400",
     },
-    size: { default: "h-11 px-4", sm: "h-9 px-3", lg: "h-12 px-6", icon: "h-11 w-11" },
+    size: { default: "h-11 px-4", sm: "h-11 px-4", lg: "h-11 px-4", icon: "h-11 w-11 p-0" },
   }, defaultVariants: { variant: "default", size: "default" } },
 );
 

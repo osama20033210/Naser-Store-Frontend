@@ -1,5 +1,8 @@
 /** Interface copy only. Catalog and customer data are never translated automatically. */
 export const arabic: Record<string, string> = {
+  "Your purchases, together.": "مشترياتك في مكان واحد.",
+  "Sign in to follow your orders and save your delivery details.": "سجّل الدخول لمتابعة طلباتك وحفظ بيانات التوصيل.",
+  "Browse products and follow your orders.": "تصفّح المنتجات وتابع طلباتك.",
   "One sign-in page.": "صفحة دخول واحدة.",
   "The image field must be an image.": "يجب أن يكون الملف صورة صالحة.", "The image field must be a file of type: jpg, jpeg, png, webp.": "الصيغ المسموحة: JPEG وPNG وWebP.", "The image field must be a file of type: image/jpeg, image/png, image/webp.": "الصيغ المسموحة: JPEG وPNG وWebP.", "The image field must not be greater than 2048 kilobytes.": "حجم الصورة يجب ألا يتجاوز 2 ميبيبايت.", "The image field has invalid image dimensions.": "أبعاد الصورة يجب ألا تتجاوز 4096 × 4096 بكسل.", "The image field failed to upload.": "تعذّر رفع الصورة. تحقق من حجم الملف وحاول مجددًا.",
   "Image unavailable": "تعذّر تحميل الصورة",

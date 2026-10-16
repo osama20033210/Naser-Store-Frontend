@@ -11,9 +11,9 @@ import { THEME_COOKIE, resolveTheme } from "@/lib/theme";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = (await cookies()).get(LOCALE_COOKIE)?.value === "ar" ? "ar" : "en";
   return {
-    title: `${brand.name} — ${translate(locale, "Workspace")}`,
+    title: `${brand.name} — ${translate(locale, "Shop")}`,
     applicationName: brand.name,
-    description: locale === "ar" ? `${brand.name} — إدارة الطلبات والمخزون` : `${brand.name} — order and inventory management`,
+    description: locale === "ar" ? `${brand.name} — تسوّق وتابع طلباتك` : `${brand.name} — shop and track your orders`,
   };
 }
 export default async function RootLayout({

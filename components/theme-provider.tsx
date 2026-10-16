@@ -36,7 +36,7 @@ export function ThemeToggle() {
   const label = t(theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
   return <button type="button" aria-label={label} title={label} aria-pressed={theme === "dark"}
     onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-    className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-800">
+    className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-800">
     {theme === "dark" ? <Sun aria-hidden="true" className="h-4 w-4"/> : <Moon aria-hidden="true" className="h-4 w-4"/>}
   </button>;
 }

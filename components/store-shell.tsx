@@ -39,7 +39,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
           >
             <Link
               href="/cart"
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-100 px-3 font-semibold leading-none text-slate-700 dark:bg-slate-800 dark:text-slate-200"
             >
               <ShoppingBag className="h-4 w-4" />
               <span className="hidden sm:inline">{t("Cart")}</span>
@@ -51,7 +51,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
               <>
                 <Link
                   aria-label={t(auth.user.account_type === "customer" ? "My account" : "Team workspace")}
-                  className="inline-flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200"
+                  className="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-2 font-semibold leading-none text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 sm:px-4"
                   href={
                     auth.user.account_type === "customer"
                       ? "/account/orders"
@@ -65,21 +65,19 @@ export function StoreShell({ children }: { children: ReactNode }) {
                       : t("Team workspace")}
                   </span>
                 </Link>
-                <button
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={auth.logout}
                   aria-label={t("Sign out")}
-                  className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                  className="text-slate-500 dark:text-slate-400"
                 >
                   <LogOut className="h-4 w-4" />
-                </button>
+                </Button>
               </>
             ) : (
-              <Link
-                href="/login"
-                className="font-semibold text-indigo-600 dark:text-indigo-400"
-              >
-                {t("Sign in")}
-              </Link>
+              <Button asChild variant="outline" className="px-3 sm:px-4"><Link href="/login">{t("Sign in")}</Link></Button>
             )}
           </nav>
         </div>
@@ -94,7 +92,6 @@ export function StoreShell({ children }: { children: ReactNode }) {
           </p>
           <div className="flex gap-5">
             <Link href="/account/orders">{t("Track orders")}</Link>
-            <Link href="/login">{t("Team access")}</Link>
           </div>
         </div>
       </footer>

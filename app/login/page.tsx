@@ -58,14 +58,13 @@ export default function LoginPage() {
         <div className="relative max-w-lg">
           <p className="text-5xl font-black leading-tight">
             {t("Your orders.")} <br />
-            {t("Your workspace.")} <br />
-            <span className="text-indigo-300">{t("One sign-in page.")}</span>
+            <span className="text-indigo-300">{t("Your purchases, together.")}</span>
           </p>
           <p className="mt-6 text-lg text-slate-300">
-            {t("Sign in to track your purchases or manage your store with your team.")} </p>
+            {t("Sign in to follow your orders and save your delivery details.")} </p>
         </div>
         <p className="relative flex items-center gap-2 text-sm text-slate-400">
-          <ShoppingBag className="h-4 w-4" /> {t("Browse products. Follow orders. Manage your work.")} </p>
+          <ShoppingBag className="h-4 w-4" /> {t("Browse products and follow your orders.")} </p>
       </section>
       <section className="grid place-items-center p-6">
         <form onSubmit={submit} className="w-full max-w-sm">
@@ -79,7 +78,7 @@ export default function LoginPage() {
             {t("Naser Store account")} </p>
           <h1 className="mt-2 text-3xl font-black">{t("Welcome back")}</h1>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            {t("Sign in to manage your orders or access your team workspace.")} </p>
+            {t("Sign in to follow your orders and save your delivery details.")} </p>
           <div className="mt-6 grid gap-5">{errors.root?.message&&<p role="alert" className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">{errorText(errors.root.message)}</p>}
             <Field label={t("Email")} error={errors.email?.message}>
               <Input

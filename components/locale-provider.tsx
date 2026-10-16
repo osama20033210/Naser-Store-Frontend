@@ -59,7 +59,7 @@ export function LocaleProvider({
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
-    document.title = `${brand.name} — ${translate(locale, path.startsWith("/dashboard") ? "Workspace" : path === "/login" ? "Sign in" : "Shop")}`;
+    document.title = `${brand.name} — ${translate(locale, path === "/login" ? "Sign in" : "Shop")}`;
   }, [locale, path]);
   return (
     <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>
@@ -81,7 +81,7 @@ export function LanguageSwitcher() {
       lang={locale === "ar" ? "en" : "ar"}
       dir="auto"
       aria-label={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}
-      className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-800"
+      className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold leading-none text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-800"
     >
       <Languages aria-hidden="true" className="hidden h-4 w-4 sm:block" />
       {locale === "ar" ? "English" : "العربية"}
