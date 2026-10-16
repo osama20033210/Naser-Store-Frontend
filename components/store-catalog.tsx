@@ -187,7 +187,7 @@ export function StoreCatalog() {
         <ErrorState error={products.error} retry={() => products.refetch()} />
       ) : products.data?.data.length ? (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {products.data.data.map((product) => (
               <Card
                 key={product.id}
@@ -201,6 +201,7 @@ export function StoreCatalog() {
                     name={product.name}
                     category={product.category?.name}
                     src={product.image_url}
+                    fit="cover"
                   />
                 </Link>
                 <div className="flex flex-1 flex-col p-4 sm:p-5">
