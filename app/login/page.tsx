@@ -4,7 +4,7 @@ import { ThemeToggle } from "@/components/theme-provider";
 
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Boxes, LoaderCircle, ShieldCheck } from "lucide-react";
+import { Boxes, LoaderCircle, ShoppingBag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useAuth } from "@/components/providers";
-import { Button, Field, Input } from "@/components/ui";
+import { Button, Field, Input, PasswordInput } from "@/components/ui";
 import { brand } from "@/lib/brand";
 
 const schema = z.object({
@@ -28,6 +28,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<Values>({ resolver: zodResolver(schema) });
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function LoginPage() {
     try {
       await auth.login(values.email, values.password);
     } catch (error) {
-      toast.error(errorText(error instanceof Error ? error.message : t("Sign in failed")));
+      setError("root",{message:error instanceof Error?error.message:"Sign in failed"});toast.error(errorText(error instanceof Error ? error.message : t("Sign in failed")));
     }
   });
   return (
@@ -56,15 +57,15 @@ export default function LoginPage() {
         </div>
         <div className="relative max-w-lg">
           <p className="text-5xl font-black leading-tight">
-            {t("Every order.")} <br />
-            {t("Every movement.")} <br />
-            <span className="text-indigo-300">{t("Under control.")}</span>
+            {t("Your orders.")} <br />
+            {t("Your workspace.")} <br />
+            <span className="text-indigo-300">{t("One sign-in page.")}</span>
           </p>
           <p className="mt-6 text-lg text-slate-300">
-            {t("A secure operations workspace for teams that care about inventory accuracy.")} </p>
+            {t("Sign in to track your purchases or manage your store with your team.")} </p>
         </div>
         <p className="relative flex items-center gap-2 text-sm text-slate-400">
-          <ShieldCheck className="h-4 w-4" /> {t("Secure cookie authentication · role based access")} </p>
+          <ShoppingBag className="h-4 w-4" /> {t("Browse products. Follow orders. Manage your work.")} </p>
       </section>
       <section className="grid place-items-center p-6">
         <form onSubmit={submit} className="w-full max-w-sm">
@@ -75,11 +76,11 @@ export default function LoginPage() {
             </div>
           </div>
           <p className="text-sm font-semibold uppercase tracking-[.2em] text-indigo-600 dark:text-indigo-400">
-            {t("Operations portal")} </p>
+            {t("Naser Store account")} </p>
           <h1 className="mt-2 text-3xl font-black">{t("Welcome back")}</h1>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             {t("Sign in to manage your orders or access your team workspace.")} </p>
-          <div className="mt-8 grid gap-5">
+          <div className="mt-6 grid gap-5">{errors.root?.message&&<p role="alert" className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">{errorText(errors.root.message)}</p>}
             <Field label={t("Email")} error={errors.email?.message}>
               <Input
                 type="email"
@@ -88,7 +89,7 @@ export default function LoginPage() {
               />
             </Field>
             <Field label={t("Password")} error={errors.password?.message}>
-              <Input
+              <PasswordInput
                 type="password"
                 autoComplete="current-password"
                 {...register("password")}

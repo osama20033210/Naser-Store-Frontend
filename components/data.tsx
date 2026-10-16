@@ -30,12 +30,12 @@ export function PageHeading({
   
 
   return (
-    <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <h1 className="text-2xl font-black tracking-tight md:text-3xl">
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div className="min-w-0">
+        <h1 className="break-words text-2xl font-bold tracking-tight md:text-3xl">
           {title}
         </h1>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{description}</p>
+        <p className="mt-1 max-w-3xl text-base text-slate-600 dark:text-slate-400">{description}</p>
       </div>
       {action}
     </div>
@@ -52,7 +52,7 @@ export function ErrorState({
 
   return (
     <Card>
-      <p className="font-semibold text-rose-600 dark:text-rose-400">
+      <p role="alert" className="font-semibold text-rose-600 dark:text-rose-400">
         {error instanceof ApiError && error.status === 403
           ? t("You do not have permission to access this page.")
           : error instanceof Error
@@ -96,13 +96,13 @@ export function DataTable<T extends { id: number }>({
 
   if (!rows.length) return <Empty title={emptyTitle} />;
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full whitespace-nowrap text-start text-sm">
+    <div role="region" aria-label={t("Scrollable table")} tabIndex={0} className="relative max-w-full overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+      <table className="w-full whitespace-nowrap text-start text-sm tabular-nums">
         <thead>
-          <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500 dark:border-slate-800 dark:text-slate-400">
+          <tr className="border-b border-slate-200 bg-slate-50 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300">
             {columns.map((c, i) => (
-              <th key={i} className="px-3 py-4 font-semibold">
-                {t(c.label)}
+              <th key={i} scope="col" className="relative px-4 py-3 text-start font-semibold">
+                {c.label ? t(c.label) : <span className="sr-only">{t("Actions")}</span>}
               </th>
             ))}
           </tr>
@@ -114,7 +114,7 @@ export function DataTable<T extends { id: number }>({
               className="border-b border-slate-100 last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50"
             >
               {columns.map((c, i) => (
-                <td key={i} className="px-3 py-4">
+                <td key={i} className="px-4 py-4 align-middle">
                   {c.render(row)}
                 </td>
               ))}

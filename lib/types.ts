@@ -13,6 +13,7 @@ export type Category = {
   products_count?: number;
 };
 export type Product = {
+  image_url?: string | null;
   id: number;
   category_id: number;
   sku: string;

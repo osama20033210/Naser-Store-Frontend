@@ -2,8 +2,9 @@
 
 
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { CartItem } from "@/lib/store-types";
+import { addCartItem, parseCart } from "@/lib/cart";
 
 const STORAGE_KEY="naser-orderly-cart";
 const CartContext=createContext<{items:CartItem[];ready:boolean;count:number;add:(id:number,quantity?:number,limit?:number)=>boolean;setQuantity:(id:number,quantity:number)=>void;remove:(id:number)=>void;clear:()=>void}|null>(null);
@@ -12,17 +13,12 @@ export function CartProvider({children}:{children:ReactNode}){
   
 
  const [items,setItems]=useState<CartItem[]>([]),[ready,setReady]=useState(false);
+ const currentItems = useRef<CartItem[]>([]);
  useEffect(()=>{
   try{
    const saved:unknown=JSON.parse(localStorage.getItem(STORAGE_KEY)??"[]");
-   if(Array.isArray(saved)){
-    const seen=new Set<number>();
-    const valid=saved.filter((item):item is CartItem=>{
-     if(!item||typeof item!=="object"||!Number.isSafeInteger(item.product_id)||item.product_id<1||!Number.isInteger(item.quantity)||item.quantity<1||item.quantity>100000||seen.has(item.product_id))return false;
-     seen.add(item.product_id);return true;
-    }).slice(0,100).map(({product_id,quantity})=>({product_id,quantity}));
-    setItems(valid);
-   }
+   currentItems.current = parseCart(saved);
+   setItems(currentItems.current);
   }catch{/* A blocked or corrupt browser cart must not prevent browsing. */}
   setReady(true);
  },[]);
@@ -30,14 +26,14 @@ export function CartProvider({children}:{children:ReactNode}){
  const value=useMemo(()=>({
   items,ready,count:items.reduce((total,item)=>total+item.quantity,0),
   add:(id:number,quantity=1,limit=100000)=>{
-   const existing=items.find(item=>item.product_id===id);
-   if(!ready||!Number.isInteger(quantity)||quantity<1||quantity+(existing?.quantity??0)>Math.min(limit,100000)||(!existing&&items.length>=100))return false;
-   setItems(current=>{const found=current.find(item=>item.product_id===id);return found?current.map(item=>item.product_id===id?{...item,quantity:Math.min(item.quantity+quantity,limit,100000)}:item):[...current,{product_id:id,quantity}]});
-   return true;
+   if(!ready)return false;
+   const result = addCartItem(currentItems.current, id, quantity, limit);
+   if(result.added){currentItems.current=result.items;setItems(result.items)}
+   return result.added;
   },
-  setQuantity:(id:number,quantity:number)=>{if(Number.isInteger(quantity)&&quantity>=1&&quantity<=100000)setItems(current=>current.map(item=>item.product_id===id?{...item,quantity}:item))},
-  remove:(id:number)=>setItems(current=>current.filter(item=>item.product_id!==id)),
-  clear:()=>setItems([]),
+  setQuantity:(id:number,quantity:number)=>{if(Number.isInteger(quantity)&&quantity>=1&&quantity<=100000){currentItems.current=currentItems.current.map(item=>item.product_id===id?{...item,quantity}:item);setItems(currentItems.current)}},
+  remove:(id:number)=>{currentItems.current=currentItems.current.filter(item=>item.product_id!==id);setItems(currentItems.current)},
+  clear:()=>{currentItems.current=[];setItems([])},
  }),[items,ready]);
  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

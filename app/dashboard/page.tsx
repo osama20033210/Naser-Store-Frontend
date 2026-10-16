@@ -20,6 +20,7 @@ import {
 } from "@/components/data";
 import { Badge, Card, Empty, Loading } from "@/components/ui";
 import { api } from "@/lib/api";
+import { RevenueChart } from "@/components/revenue-chart";
 import type { Order, Product, Resource } from "@/lib/types";
 
 type Dashboard = {
@@ -53,8 +54,7 @@ function DashboardContent() {
   if (query.isError)
     return <ErrorState error={query.error} retry={() => query.refetch()} />;
   if (!query.data) return null;
-  const d = query.data.data,
-    max = Math.max(...d.revenue_trends.map((r) => Number(r.revenue_minor)), 1);
+  const d = query.data.data;
   const metrics = [
     {
       label: t("Total orders"),
@@ -66,7 +66,7 @@ function DashboardContent() {
       label: t("Completed revenue"),
       value: money(d.revenue_minor),
       icon: DollarSign,
-      color: "text-emerald-600 bg-emerald-50",
+      color: "text-emerald-600 bg-emerald-50 dark:text-emerald-300 dark:bg-emerald-500/10",
     },
     {
       label: t("Pending orders"),
@@ -78,7 +78,7 @@ function DashboardContent() {
       label: t("Completed orders"),
       value: d.completed_orders,
       icon: CircleCheck,
-      color: "text-cyan-600 bg-cyan-50",
+      color: "text-cyan-600 bg-cyan-50 dark:text-cyan-300 dark:bg-cyan-500/10",
     },
   ];
   return (
@@ -87,16 +87,16 @@ function DashboardContent() {
         title={t("Business overview")}
         description={t("A live view of your orders, revenue, and inventory.")}
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {metrics.map(({ label, value, icon: Icon, color }) => (
-          <Card key={label}>
+          <Card key={label} className="p-3 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className={`rounded-xl p-3 ${color}`}>
+              <span className={`rounded-xl p-2 ${color}`}>
                 <Icon className="h-5 w-5" />
               </span>
               <span className="text-xs text-slate-400">{t("All time")}</span>
             </div>
-            <p className="mt-5 text-3xl font-black">{value}</p>
+            <p className="mt-3 break-words text-2xl font-bold tabular-nums">{value}</p>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t(String(label))}</p>
           </Card>
         ))}
@@ -106,35 +106,12 @@ function DashboardContent() {
           <div className="flex justify-between">
             <div>
               <h2 className="font-bold">{t("Revenue trend")}</h2>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 {t("Completed orders · last 30 days by order creation date")} </p>
             </div>
             <Badge tone="indigo">{t("USD")}</Badge>
           </div>
-          {d.revenue_trends.length ? (
-            <div className="mt-8 flex h-48 items-end gap-2 overflow-x-auto border-b border-slate-200 dark:border-slate-700">
-              {d.revenue_trends.map((row) => (
-                <div
-                  key={row.date}
-                  className="group flex h-full min-w-8 flex-1 items-end"
-                  title={`${row.date}: ${money(Number(row.revenue_minor))}`}
-                >
-                  <div
-                    className="w-full rounded-t-lg bg-indigo-500 transition hover:bg-indigo-400"
-                    style={{
-                      height: `${Math.max((Number(row.revenue_minor) / max) * 100, 2)}%`,
-                    }}
-                    aria-label={`${row.date}: ${money(Number(row.revenue_minor))}`}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <Empty
-              title={t("Revenue will appear here")}
-              detail={t("Complete an order to start tracking revenue.")}
-            />
-          )}
+          <RevenueChart points={d.revenue_trends}/>
         </Card>
         <Card>
           <h2 className="font-bold">{t("Order distribution")}</h2>
@@ -187,7 +164,7 @@ function DashboardContent() {
                     className="font-semibold text-indigo-600 dark:text-indigo-400"
                     href={`/dashboard/orders/${o.id}`}
                   >
-                    #{o.number.slice(0, 8)}
+                    #<bdi dir="auto">{o.number.slice(0, 8)}</bdi>
                   </Link>
                 ),
               },
@@ -208,7 +185,7 @@ function DashboardContent() {
                   </Badge>
                 ),
               },
-              { label: t("Total"), render: (o) => money(o.total_minor) },
+              { label: t("Total"), render: (o) => <bdi dir="auto">{money(o.total_minor)}</bdi> },
               { label: t("Created"), render: (o) => dateTime(o.created_at) },
             ]}
           />
@@ -229,7 +206,7 @@ function DashboardContent() {
               >
                 <div>
                   <p className="text-sm font-semibold">{p.name}</p>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{p.sku}</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400"><bdi dir="ltr">{p.sku}</bdi></p>
                 </div>
                 <Badge tone={p.stock === 0 ? "red" : "amber"}>
                   {p.stock} {t("left")} </Badge>
