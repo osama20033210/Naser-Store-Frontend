@@ -1,5 +1,6 @@
 "use client";
 import { useLocale, LanguageSwitcher } from "@/components/locale-provider";
+import { ThemeToggle } from "@/components/theme-provider";
 
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -67,16 +68,16 @@ export default function LoginPage() {
       </section>
       <section className="grid place-items-center p-6">
         <form onSubmit={submit} className="w-full max-w-sm">
-          <div className="mb-6 flex justify-end"><LanguageSwitcher/></div>
+          <div className="mb-6 flex justify-end gap-2"><LanguageSwitcher/><ThemeToggle/></div>
           <div className="mb-8 lg:hidden">
             <div className="flex items-center gap-2 text-xl font-bold">
-              <Boxes className="text-indigo-600" /> {brand.name}
+              <Boxes className="text-indigo-600 dark:text-indigo-400" /> {brand.name}
             </div>
           </div>
-          <p className="text-sm font-semibold uppercase tracking-[.2em] text-indigo-600">
+          <p className="text-sm font-semibold uppercase tracking-[.2em] text-indigo-600 dark:text-indigo-400">
             {t("Operations portal")} </p>
           <h1 className="mt-2 text-3xl font-black">{t("Welcome back")}</h1>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             {t("Sign in to manage your orders or access your team workspace.")} </p>
           <div className="mt-8 grid gap-5">
             <Field label={t("Email")} error={errors.email?.message}>
@@ -98,8 +99,8 @@ export default function LoginPage() {
                 <LoaderCircle className="h-4 w-4 animate-spin" />
               )}
               {t("Sign in")} </Button>
-            <p className="text-center text-sm text-slate-500">{t("New customer?")} <Link href="/register" className="font-semibold text-indigo-600">{t("Create an account")}</Link></p>
-            <Link href="/shop" className="text-center text-sm text-indigo-600">{t("Continue browsing the store")}</Link>
+            <p className="text-center text-sm text-slate-500 dark:text-slate-400">{t("New customer?")} <Link href="/register" className="font-semibold text-indigo-600 dark:text-indigo-400">{t("Create an account")}</Link></p>
+            <Link href="/shop" className="text-center text-sm text-indigo-600 dark:text-indigo-400">{t("Continue browsing the store")}</Link>
           </div>
         </form>
       </section>

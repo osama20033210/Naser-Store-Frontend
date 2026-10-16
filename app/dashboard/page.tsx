@@ -60,7 +60,7 @@ function DashboardContent() {
       label: t("Total orders"),
       value: d.total_orders,
       icon: ShoppingBag,
-      color: "text-indigo-600 bg-indigo-50",
+      color: "text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-500/10",
     },
     {
       label: t("Completed revenue"),
@@ -72,7 +72,7 @@ function DashboardContent() {
       label: t("Pending orders"),
       value: d.pending_orders,
       icon: Clock3,
-      color: "text-amber-600 bg-amber-50",
+      color: "text-amber-600 bg-amber-50 dark:bg-amber-500/10",
     },
     {
       label: t("Completed orders"),
@@ -97,7 +97,7 @@ function DashboardContent() {
               <span className="text-xs text-slate-400">{t("All time")}</span>
             </div>
             <p className="mt-5 text-3xl font-black">{value}</p>
-            <p className="mt-1 text-sm text-slate-500">{t(String(label))}</p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t(String(label))}</p>
           </Card>
         ))}
       </div>
@@ -106,13 +106,13 @@ function DashboardContent() {
           <div className="flex justify-between">
             <div>
               <h2 className="font-bold">{t("Revenue trend")}</h2>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 {t("Completed orders · last 30 days by order creation date")} </p>
             </div>
             <Badge tone="indigo">{t("USD")}</Badge>
           </div>
           {d.revenue_trends.length ? (
-            <div className="mt-8 flex h-48 items-end gap-2 overflow-x-auto border-b border-slate-200">
+            <div className="mt-8 flex h-48 items-end gap-2 overflow-x-auto border-b border-slate-200 dark:border-slate-700">
               {d.revenue_trends.map((row) => (
                 <div
                   key={row.date}
@@ -172,7 +172,7 @@ function DashboardContent() {
             <h2 className="font-bold">{t("Recent orders")}</h2>
             <Link
               href="/dashboard/orders"
-              className="flex items-center gap-1 text-sm font-semibold text-indigo-600"
+              className="flex items-center gap-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400"
             >
               {t("View all")} <ArrowUpRight className="h-4 w-4" />
             </Link>
@@ -184,7 +184,7 @@ function DashboardContent() {
                 label: t("Order"),
                 render: (o) => (
                   <Link
-                    className="font-semibold text-indigo-600"
+                    className="font-semibold text-indigo-600 dark:text-indigo-400"
                     href={`/dashboard/orders/${o.id}`}
                   >
                     #{o.number.slice(0, 8)}
@@ -229,7 +229,7 @@ function DashboardContent() {
               >
                 <div>
                   <p className="text-sm font-semibold">{p.name}</p>
-                  <p className="mt-1 text-xs text-slate-500">{p.sku}</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{p.sku}</p>
                 </div>
                 <Badge tone={p.stock === 0 ? "red" : "amber"}>
                   {p.stock} {t("left")} </Badge>

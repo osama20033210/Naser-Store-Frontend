@@ -24,9 +24,9 @@ export const buttonVariants = cva(
       default: "bg-indigo-600 text-white shadow-sm hover:bg-indigo-500",
       destructive: "bg-rose-600 text-white hover:bg-rose-500",
       outline: "border border-slate-200 bg-transparent hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800",
-      secondary: "bg-slate-100 text-slate-700 hover:bg-slate-200",
+      secondary: "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700",
       ghost: "hover:bg-slate-100 dark:hover:bg-slate-800",
-      link: "text-indigo-600 underline-offset-4 hover:underline",
+      link: "text-indigo-600 underline-offset-4 hover:underline dark:text-indigo-400",
     },
     size: { default: "h-10 px-4", sm: "h-9 px-3", lg: "h-11 px-6", icon: "h-10 w-10" },
   }, defaultVariants: { variant: "default", size: "default" } },
@@ -117,10 +117,10 @@ export function Badge({
 
   const tones = {
     slate: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
-    green: "bg-emerald-100 text-emerald-700",
-    amber: "bg-amber-100 text-amber-700",
-    red: "bg-rose-100 text-rose-700",
-    indigo: "bg-indigo-100 text-indigo-700",
+    green: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
+    amber: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
+    red: "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300",
+    indigo: "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300",
   };
   return (
     <span
@@ -148,7 +148,7 @@ export function Field({
     <label className="grid gap-1.5 text-sm font-medium">
       <span>{t(label)}</span>
       {children}
-      {error && <span className="text-xs text-rose-600">{errorText(error)}</span>}
+      {error && <span className="text-xs text-rose-600 dark:text-rose-400">{errorText(error)}</span>}
     </label>
   );
 }
@@ -165,7 +165,7 @@ export function Empty({
     <div className="grid min-h-48 place-items-center text-center">
       <div>
         <p className="font-semibold">{t(title)}</p>
-        <p className="mt-1 text-sm text-slate-500">{t(detail)}</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t(detail)}</p>
       </div>
     </div>
   );
@@ -182,7 +182,7 @@ export function Loading() {
   return (
     <div role="status" aria-label={t("Loading")} className="grid min-h-56 gap-5 py-6">
       <LoaderCircle
-        className="h-7 w-7 animate-spin text-indigo-600"
+        className="h-7 w-7 animate-spin text-indigo-600 dark:text-indigo-400"
         aria-label={t("Loading")}
       />
       <div className="grid gap-3">
@@ -247,7 +247,7 @@ export function Pagination({
       <div className="flex gap-2">
         <Button
           type="button"
-          className="h-9 bg-slate-100 text-slate-700 hover:bg-slate-200"
+          className="h-9 bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           disabled={page <= 1}
           onClick={() => onPage(page - 1)}
         >

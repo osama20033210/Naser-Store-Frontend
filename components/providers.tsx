@@ -1,5 +1,6 @@
 "use client";
 import { useLocale } from "@/components/locale-provider";
+import { useTheme } from "@/components/theme-provider";
 
 
 import {
@@ -105,6 +106,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
 export function Providers({ children }: { children: ReactNode }) {
   const { locale } = useLocale();
+  const { theme } = useTheme();
 
   const [client] = useState(
     () =>
@@ -118,7 +120,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={client}>
       <AuthProvider><CartProvider>{children}</CartProvider></AuthProvider>
-      <Toaster richColors dir={locale === "ar" ? "rtl" : "ltr"} position={locale === "ar" ? "top-left" : "top-right"} />
+      <Toaster richColors theme={theme} dir={locale === "ar" ? "rtl" : "ltr"} position={locale === "ar" ? "top-left" : "top-right"} />
     </QueryClientProvider>
   );
 }

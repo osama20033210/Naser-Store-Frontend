@@ -35,7 +35,7 @@ export function PageHeading({
         <h1 className="text-2xl font-black tracking-tight md:text-3xl">
           {title}
         </h1>
-        <p className="mt-2 text-sm text-slate-500">{description}</p>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{description}</p>
       </div>
       {action}
     </div>
@@ -52,7 +52,7 @@ export function ErrorState({
 
   return (
     <Card>
-      <p className="font-semibold text-rose-600">
+      <p className="font-semibold text-rose-600 dark:text-rose-400">
         {error instanceof ApiError && error.status === 403
           ? t("You do not have permission to access this page.")
           : error instanceof Error
@@ -99,7 +99,7 @@ export function DataTable<T extends { id: number }>({
     <div className="overflow-x-auto">
       <table className="w-full whitespace-nowrap text-start text-sm">
         <thead>
-          <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500 dark:border-slate-800">
+          <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500 dark:border-slate-800 dark:text-slate-400">
             {columns.map((c, i) => (
               <th key={i} className="px-3 py-4 font-semibold">
                 {t(c.label)}
@@ -198,10 +198,10 @@ export function Lookup({
         ))}
       </Select>
       {query.isLoading && (
-        <span className="text-xs text-slate-500">{t("Loading options…")}</span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">{t("Loading options…")}</span>
       )}
       {query.isError && (
-        <span className="text-xs text-rose-600">{t("Could not load options.")}</span>
+        <span className="text-xs text-rose-600 dark:text-rose-400">{t("Could not load options.")}</span>
       )}
       {query.data && query.data.meta.last_page > 1 && (
         <Pagination

@@ -1,5 +1,6 @@
 "use client";
 import { useLocale, LanguageSwitcher } from "@/components/locale-provider";
+import { ThemeToggle } from "@/components/theme-provider";
 
 
 import {
@@ -9,11 +10,9 @@ import {
   ClipboardList,
   LogOut,
   Menu,
-  Moon,
   Package,
   Settings,
   ShoppingBasket,
-  Sun,
   Tags,
   Users,
   Warehouse,
@@ -72,15 +71,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user, loading, can, logout } = useAuth(),
     router = useRouter(),
     path = usePathname();
-  const [open, setOpen] = useState(false),
-    [dark, setDark] = useState(false);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
     if (user?.account_type === "customer") router.replace("/account/orders");
   }, [loading, user, router]);
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
   if (loading || !user || user.account_type === "customer") return <Loading />;
   const current =
     links.find((link) => path === link.href) ||
@@ -167,7 +162,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <Menu />
             </button>
-            <div className="flex min-w-0 items-center gap-2 text-sm text-slate-500">
+            <div className="flex min-w-0 items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
               <ShoppingBasket className="hidden h-4 w-4 sm:block" />
               <ChevronRight className="hidden h-3 w-3 sm:block" />
               <span className="truncate font-semibold text-slate-900 dark:text-slate-100">
@@ -175,13 +170,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2"><LanguageSwitcher/><button
-            className="rounded-xl border border-slate-200 p-2 dark:border-slate-700"
-            onClick={() => setDark((v) => !v)}
-            aria-label={t("Toggle theme")}
-          >
-            {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button></div>
+          <div className="flex items-center gap-2"><LanguageSwitcher/><ThemeToggle/></div>
         </header>
         <main className="p-4 md:p-8">{children}</main>
       </div>

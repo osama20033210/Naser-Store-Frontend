@@ -1,5 +1,7 @@
 /** Interface copy only. Catalog and customer data are never translated automatically. */
 export const arabic: Record<string, string> = {
+  "Switch to light mode": "التبديل إلى الوضع النهاري",
+  "Switch to dark mode": "التبديل إلى الوضع الليلي",
   "User does not have the right permissions.": "ليس لديك الصلاحية المطلوبة.", "User does not have the right roles.": "ليس لديك الدور المطلوب.", "Too Many Requests": "طلبات كثيرة. حاول بعد قليل.",
   "CSRF validation failed. Reload and try again.": "تعذّر التحقق من أمان الطلب. أعد تحميل الصفحة وحاول مجدداً.",
   "This email is unavailable. Sign in or contact the store.": "هذا البريد غير متاح. سجّل الدخول أو تواصل مع المتجر.",
