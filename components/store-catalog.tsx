@@ -224,7 +224,7 @@ export function StoreCatalog() {
                       {product.description}
                     </p>
                   )}
-                  <p className="mb-4 mt-4 text-2xl font-bold tabular-nums">
+                  <p className="mb-4 mt-3 text-base font-semibold tabular-nums">
                     <bdi>{money(product.price_minor)}</bdi>
                   </p>
                   <div className="mt-auto">
@@ -300,7 +300,7 @@ export function StoreProductDetail({ id }: { id: number }) {
             {product.name}
           </h1>
           <div className="my-4 flex flex-wrap items-center gap-4">
-            <p className="text-3xl font-bold">
+            <p className="text-xl font-semibold tabular-nums">
               <bdi>{money(product.price_minor)}</bdi>
             </p>
             <Badge tone={product.in_stock ? "green" : "slate"}>

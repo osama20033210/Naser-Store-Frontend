@@ -1,7 +1,86 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: "Naser Sans";
+  src: url("/fonts/IBMPlexSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Naser Sans";
+  src: url("/fonts/IBMPlexSans-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Naser Sans";
+  src: url("/fonts/IBMPlexSans-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Naser Sans";
+  src: url("/fonts/IBMPlexSans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Naser Arabic";
+  src: url("/fonts/IBMPlexSansArabic-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Naser Arabic";
+  src: url("/fonts/IBMPlexSansArabic-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Naser Arabic";
+  src: url("/fonts/IBMPlexSansArabic-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Naser Arabic";
+  src: url("/fonts/IBMPlexSansArabic-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
+  --font-sans: "Naser Sans", "Naser Arabic", "Segoe UI", sans-serif;
+  --font-weight-extrabold: 700;
+  --font-weight-black: 700;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.6;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.6;
+  --text-base: 1rem;
+  --text-base--line-height: 1.75;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.6;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.5;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.4;
+  --text-3xl: 1.75rem;
+  --text-3xl--line-height: 1.35;
+  --text-4xl: 2rem;
+  --text-4xl--line-height: 1.25;
+  --text-5xl: 2.25rem;
+  --text-5xl--line-height: 1.25;
   --color-indigo-50: #f5f3ff;
   --color-indigo-100: #ede9fe;
   --color-indigo-200: #ddd6fe;
@@ -27,10 +106,12 @@ body {
   margin: 0;
   background: #f8fafc;
   color: #0f172a;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 main {
   min-width: 0;
@@ -58,11 +139,17 @@ html {
   background: #020617;
   color: #e2e8f0;
 }
-button,
-input,
-select,
-textarea {
-  font: inherit;
+@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+  h1, h2, h3 {
+    font-weight: 600;
+    text-wrap: pretty;
+  }
 }
 table {
   border-collapse: collapse;
@@ -109,12 +196,14 @@ table {
 }
 
 html[lang="ar"] body {
-  font-family: Tahoma, Arial, sans-serif;
-  line-height: 1.85;
+  font-family: "Naser Arabic", "Naser Sans", "Segoe UI", sans-serif;
+  line-height: 1.8;
 }
 
 html[lang="ar"] .tracking-widest,
 html[lang="ar"] .tracking-wide,
+html[lang="ar"] .tracking-tight,
+html[lang="ar"] .tracking-tighter,
 html[lang="ar"] .tracking-\[\.2em\] {
   letter-spacing: normal;
 }

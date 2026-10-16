@@ -80,7 +80,7 @@ export function Input(props: ComponentProps<"input">) {
           : undefined)
       }
       className={cn(
-        "h-11 min-w-0 w-full rounded-xl border border-slate-300 bg-white px-3 text-base outline-none placeholder:text-slate-500 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:opacity-60 aria-invalid:border-rose-500 dark:border-slate-700 dark:bg-slate-950 dark:placeholder:text-slate-400",
+        "h-11 min-w-0 w-full rounded-xl border border-slate-300 bg-white px-3 text-base sm:text-sm outline-none placeholder:text-slate-500 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:opacity-60 aria-invalid:border-rose-500 dark:border-slate-700 dark:bg-slate-950 dark:placeholder:text-slate-400",
         props.className,
       )}
     />
@@ -115,7 +115,7 @@ export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
     <select
       {...props}
       className={cn(
-        "select-control h-11 min-w-0 max-w-full w-full rounded-xl border border-slate-300 bg-white ps-3 pe-10 text-base text-slate-900 shadow-sm outline-none transition-[border-color,box-shadow] hover:border-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-slate-300 aria-invalid:border-rose-500 aria-invalid:focus:ring-rose-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:border-slate-500 dark:disabled:hover:border-slate-700",
+        "select-control h-11 min-w-0 max-w-full w-full rounded-xl border border-slate-300 bg-white ps-3 pe-10 text-base sm:text-sm text-slate-900 shadow-sm outline-none transition-[border-color,box-shadow] hover:border-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-slate-300 aria-invalid:border-rose-500 aria-invalid:focus:ring-rose-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:border-slate-500 dark:disabled:hover:border-slate-700",
         props.className,
       )}
     />
@@ -126,7 +126,7 @@ export function Textarea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
     <textarea
       {...props}
       className={cn(
-        "min-h-28 w-full rounded-xl border border-slate-300 bg-white p-3 text-base outline-none focus:border-indigo-500 aria-invalid:border-rose-500 dark:border-slate-700 dark:bg-slate-950",
+        "min-h-28 w-full rounded-xl border border-slate-300 bg-white p-3 text-base sm:text-sm outline-none focus:border-indigo-500 aria-invalid:border-rose-500 dark:border-slate-700 dark:bg-slate-950",
         props.className,
       )}
     />
