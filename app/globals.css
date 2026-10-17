@@ -60,6 +60,12 @@
 }
 
 @theme {
+  --radius-control: 0.625rem;
+  --radius-panel: 0.875rem;
+  --shadow-panel: 0 1px 2px rgb(15 23 42 / 0.035), 0 4px 16px rgb(15 23 42 / 0.025);
+  --shadow-floating: 0 12px 40px rgb(15 23 42 / 0.14), 0 2px 8px rgb(15 23 42 / 0.06);
+  --spacing-control: 2.75rem;
+  --animate-panel-in: panel-in 180ms ease-out;
   --font-sans: "Naser Sans", "Naser Arabic", "Segoe UI", sans-serif;
   --font-weight-extrabold: 700;
   --font-weight-black: 700;
@@ -95,17 +101,33 @@
 }
 :root {
   color-scheme: light;
+  --surface-canvas: #f6f7f9;
+  --surface-panel: #ffffff;
+  --surface-subtle: #f0f2f5;
+  --border-subtle: #e5e7ed;
+  --text-primary: #172033;
+  --text-secondary: #536178;
+  --accent: #7c3aed;
+  --duration-fast: 120ms;
+  --duration-ui: 180ms;
+  --duration-layout: 220ms;
 }
 .dark {
   color-scheme: dark;
+  --surface-canvas: #0b0e16;
+  --surface-panel: #121723;
+  --surface-subtle: #191f2d;
+  --border-subtle: #252d3d;
+  --text-primary: #e8ecf4;
+  --text-secondary: #a1adc1;
 }
 * {
   box-sizing: border-box;
 }
 body {
   margin: 0;
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--surface-canvas);
+  color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.65;
@@ -172,8 +194,38 @@ html {
   }
 }
 .dark body {
-  background: #020617;
-  color: #e2e8f0;
+  background: var(--surface-canvas);
+  color: var(--text-primary);
+}
+@layer components {
+  .panel { border: 1px solid var(--border-subtle); background: var(--surface-panel); box-shadow: var(--shadow-panel); border-radius: var(--radius-panel); }
+  .muted-copy { color: var(--text-secondary); }
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 0.75rem; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); }
+  .segmented-control { display: inline-flex; max-width: 100%; flex-wrap: wrap; gap: 0.25rem; padding: 0.25rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-control); background: var(--surface-subtle); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot="button"] { transition-duration: var(--duration-fast); transition-property: color, background-color, border-color, box-shadow, transform; }
+  [data-slot="button"]:active:not(:disabled) { transform: translateY(1px); }
+  .workspace-layout { transition: grid-template-columns var(--duration-layout) ease; }
+  .workspace-link { transition: color var(--duration-ui), background-color var(--duration-ui); }
+  .dialog-overlay[data-state="open"], .drawer-overlay[data-state="open"] { animation: overlay-in var(--duration-ui) ease-out; }
+  .dialog-overlay[data-state="closed"], .drawer-overlay[data-state="closed"] { animation: overlay-in var(--duration-fast) ease-in reverse; }
+  .dialog-panel[data-state="open"] { animation: panel-in var(--duration-ui) ease-out; }
+  .dialog-panel[data-state="closed"] { animation: panel-in var(--duration-fast) ease-in reverse; }
+  .drawer-panel[data-state="open"] { animation: drawer-in var(--duration-layout) ease-out; }
+  .drawer-panel[data-state="closed"] { animation: drawer-in var(--duration-fast) ease-in reverse; }
+  .metric-card { animation: panel-in var(--duration-layout) ease-out both; }
+  .table-reveal { animation: overlay-in var(--duration-ui) ease-out; }
+  .field-error { animation: panel-in var(--duration-fast) ease-out; }
+  .chart-bar { transform-box: fill-box; transform-origin: center bottom; animation: bar-in var(--duration-layout) ease-out both; }
+}
+@keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes panel-in { from { opacity: 0.6; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes drawer-in { from { opacity: 0.6; transform: translateX(var(--drawer-enter, -16px)); } to { opacity: 1; transform: translateX(0); } }
+@keyframes bar-in { from { transform: scaleY(0.94); opacity: 0.6; } to { transform: scaleY(1); opacity: 1; } }
+:dir(rtl) .drawer-panel { --drawer-enter: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0s !important; transition-duration: 0s !important; }
 }
 @layer base {
   button,
@@ -189,6 +241,11 @@ html {
 }
 table {
   border-collapse: collapse;
+}
+.pagination-nav { container-type: inline-size; }
+@container (min-width: 480px) {
+  .pagination-compact { display: none; }
+  .pagination-wide { display: flex; }
 }
 .select-control:not([multiple]) {
   appearance: none;

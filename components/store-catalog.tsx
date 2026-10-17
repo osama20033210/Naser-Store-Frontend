@@ -26,6 +26,7 @@ import {
   Loading,
   Pagination,
   Select,
+  Skeleton,
 } from "@/components/ui";
 import { api } from "@/lib/api";
 import type { StoreProduct } from "@/lib/store-types";
@@ -107,7 +108,7 @@ export function StoreCatalog() {
   return (
     <section id="products" className="scroll-mt-36">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-bold">{t("Products")}</h2>
+        <h1 className="text-xl font-semibold">{t("Products")}</h1>
         <p role="status" className="text-sm text-slate-600 dark:text-slate-400">
           {products.data
             ? t("{count} products available to browse", {
@@ -182,7 +183,7 @@ export function StoreCatalog() {
         </p>
       )}
       {products.isLoading ? (
-        <Loading />
+        <ProductGridLoading />
       ) : products.isError ? (
         <ErrorState error={products.error} retry={() => products.refetch()} />
       ) : products.data?.data.length ? (
@@ -257,6 +258,11 @@ export function StoreCatalog() {
       )}
     </section>
   );
+}
+
+function ProductGridLoading() {
+  const { t } = useLocale();
+  return <div role="status" aria-label={t("Loading")} aria-busy="true" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">{Array.from({length:8},(_,index)=><Card key={index} className="overflow-hidden p-0 sm:p-0"><Skeleton className="aspect-[4/3] w-full rounded-none"/><div className="grid gap-3 p-4 sm:p-5"><div className="flex justify-between gap-4"><Skeleton className="h-5 w-24"/><Skeleton className="h-5 w-12"/></div><Skeleton className="h-7 w-3/4"/><Skeleton className="h-10 w-full"/><Skeleton className="my-1 h-6 w-24"/><Skeleton className="h-11 w-full"/></div></Card>)}<span className="sr-only">{t("Loading")}</span></div>;
 }
 
 export function StoreProductDetail({ id }: { id: number }) {

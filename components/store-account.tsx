@@ -3,16 +3,17 @@ import { useLocale } from "@/components/locale-provider";
 
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Check, Clock3, PackageCheck } from "lucide-react";
+import { ArrowLeft, Check, Clock3, PackageCheck, ShoppingBag } from "lucide-react";
+import { StatusBadge } from "@/components/status-badge";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { DataTable, ErrorState, PageHeading } from "@/components/data";
 import { useAuth } from "@/components/providers";
-import { Badge, Button, Card, Dialog, Field, Input, Loading, Pagination, Textarea } from "@/components/ui";
+import { Badge, Button, Card, Dialog, Field, Input, Loading, Pagination, Select, Textarea } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
-import { useListFilter } from "@/components/use-list-filters";
+import { setListFilters, useListFilter } from "@/components/use-list-filters";
 import type { StoreOrder, StoreProfile } from "@/lib/store-types";
 import type { Page, Resource } from "@/lib/types";
 
@@ -26,12 +27,83 @@ export function StoreProfilePage(){
  return <><PageHeading title={t("Your profile")} description={t("Save contact details to make your next checkout easier.")}/><Card className="max-w-2xl"><form className="grid gap-5" onSubmit={handleSubmit(async values=>{try{await api("/store/profile",{method:"PUT",body:JSON.stringify(values)});await client.invalidateQueries({queryKey:["store","profile"]});await auth.refreshUser();toast.success(t("Profile saved"))}catch(error){if(error instanceof ApiError)Object.entries(error.body.errors??{}).forEach(([key,messages])=>setError(key as keyof typeof values,{message:messages[0]}));toast.error(errorText(error instanceof Error?error.message:t("Save failed")))}})}><section className="grid gap-5"><h2 className="text-lg font-semibold">{t("Contact details")}</h2><Field label={t("Full name")} error={errors.name?.message}><Input autoComplete="name" {...register("name",{required:"Name is required",maxLength:255})}/></Field><Field label={t("Email")}><Input type="email" readOnly value={query.data?.data.email??""}/></Field><Field label={t("Phone")} error={errors.phone?.message}><Input type="tel" autoComplete="tel" {...register("phone",{maxLength:40})}/></Field></section><section className="grid gap-4 border-t border-slate-200 pt-5 dark:border-slate-800"><h2 className="text-lg font-semibold">{t("Delivery details")}</h2><Field label={t("Delivery address")} error={errors.address?.message}><Textarea autoComplete="street-address" {...register("address",{maxLength:2000})}/></Field></section><p className="text-sm text-slate-500 dark:text-slate-400">{t("Saved details do not change delivery addresses on orders you already placed.")}</p><Button disabled={isSubmitting}>{isSubmitting?t("Saving…"):t("Save profile")}</Button></form></Card></>;
 }
 
-export function StoreOrders(){
+export function StoreOrders() {
   const { t, money, dateTime } = useLocale();
+  const [pageText, setPageText] = useListFilter("page", "1");
+  const [search] = useListFilter("q", "");
+  const [status] = useListFilter("status", "");
+  const [dateFrom] = useListFilter("date_from", "");
+  const [dateTo] = useListFilter("date_to", "");
+  const filters = useForm<{ q: string; status: string; date_from: string; date_to: string }>({
+    values: { q: search, status, date_from: dateFrom, date_to: dateTo },
+  });
+  const page = Math.max(1, Number(pageText) || 1);
+  const params = new URLSearchParams({ page: String(page) });
+  if (search) params.set("q", search);
+  if (status) params.set("status", status);
+  if (dateFrom) params.set("date_from", dateFrom);
+  if (dateTo) params.set("date_to", dateTo);
+  const filtered = Boolean(search || status || dateFrom || dateTo);
+  const applyFilters = (values: { q: string; status: string; date_from: string; date_to: string }) => {
+    setListFilters({ q: values.q.trim() || null, status: values.status || null, date_from: values.date_from || null, date_to: values.date_to || null, page: null });
+  };
+  const query = useQuery({
+    queryKey: ["store", "orders", page, search, status, dateFrom, dateTo],
+    queryFn: ({ signal }) => api<Page<StoreOrder>>(`/store/orders?${params}`, { signal }),
+    refetchOnWindowFocus: true,
+  });
+  const orders = query.data?.data ?? [];
+  const last = query.data?.meta.last_page ?? 1;
 
- const [pageText,setPageText]=useListFilter("page","1");const page=Math.max(1,Number(pageText)||1),setPage=(value:number)=>setPageText(String(value));
- const query=useQuery({queryKey:["store","orders",page],queryFn:({signal})=>api<Page<StoreOrder>>(`/store/orders?page=${page}`,{signal}),refetchOnWindowFocus:true});
- return <><PageHeading title={t("My orders")} description={t("Follow your orders from confirmation to delivery.")}/><Card>{query.isLoading?<Loading/>:query.isError?<ErrorState error={query.error} retry={()=>query.refetch()}/>:<><DataTable rows={query.data?.data??[]} emptyTitle={t("You have not placed an order yet")} columns={[{label:t("Order"),render:order=><Link href={`/account/orders/${order.id}`} className="font-semibold text-indigo-600 dark:text-indigo-400">#<bdi dir="auto">{order.number.slice(0,8)}</bdi></Link>},{label:t("Placed"),render:order=>dateTime(order.created_at)},{label:t("Status"),render:order=><Badge tone={order.status==="completed"?"green":order.status==="cancelled"?"red":"indigo"}>{order.status}</Badge>},{label:t("Payment"),render:order=>order.payment_status==="paid"?t("Paid"):order.payment_method==="cash_on_delivery"?t("Cash on delivery"):t("Not recorded")},{label:t("Total"),render:order=><bdi dir="auto">{money(order.total_minor)}</bdi>}]}/><Pagination page={page} last={query.data?.meta.last_page??1} onPage={setPage}/></>}</Card><Button asChild variant="outline" className="mt-5"><Link href="/shop">{t("Continue shopping")}</Link></Button></>;
+  return <>
+    <PageHeading title={t("My orders")} description={t("Follow your orders from confirmation to delivery.")}
+      action={<Button asChild variant="outline"><Link href="/shop"><ShoppingBag aria-hidden="true"/>{t("Continue shopping")}</Link></Button>}/>
+    <Card className="mb-5 p-4 sm:p-5">
+      <form className="grid gap-4" onSubmit={filters.handleSubmit(applyFilters)}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={t("Order number")}><Input type="search" dir="ltr" maxLength={100} placeholder={t("Full or partial order number")} {...filters.register("q")}/></Field>
+          <Field label={t("Status")}><Select {...filters.register("status")}><option value="">{t("All statuses")}</option>{["pending", "confirmed", "processing", "completed", "cancelled"].map(value => <option key={value} value={value}>{t(value)}</option>)}</Select></Field>
+          <Field label={t("From date (UTC)")}><Input type="date" {...filters.register("date_from")}/></Field>
+          <Field label={t("To date (UTC)")} error={filters.formState.errors.date_to?.message}><Input type="date" aria-invalid={Boolean(filters.formState.errors.date_to)} {...filters.register("date_to", { validate: value => !value || !filters.getValues("date_from") || value >= filters.getValues("date_from") || t("End date must be on or after start date.") })}/></Field>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button type="submit">{t("Search orders")}</Button>
+          <Button type="button" variant="ghost" onClick={() => { filters.reset({ q: "", status: "", date_from: "", date_to: "" }); applyFilters({ q: "", status: "", date_from: "", date_to: "" }); }}>{t("Clear filters")}</Button>
+          {query.data && !query.isError && <p role="status" className="ms-auto text-sm text-slate-500 dark:text-slate-400">{t("{count} matching orders", { count: query.data.meta.total })}</p>}
+        </div>
+      </form>
+    </Card>
+    {query.isLoading ? <div role="status" aria-busy="true" className="grid gap-4">
+      <span className="sr-only">{t("Loading")}</span>
+      {[0, 1, 2].map(index => <div key={index} className="panel space-y-5 p-5 motion-safe:animate-pulse" aria-hidden="true"><div className="flex justify-between gap-4"><div className="h-4 w-28 rounded bg-slate-200 dark:bg-slate-800"/><div className="h-5 w-16 rounded bg-slate-200 dark:bg-slate-800"/></div><div className="h-3 w-40 rounded bg-slate-200 dark:bg-slate-800"/><div className="h-10 rounded bg-slate-100 dark:bg-slate-800/60"/></div>)}
+    </div> : query.isError ? <ErrorState error={query.error} retry={() => query.refetch()}/> : orders.length === 0 ? <Card className="flex flex-col items-center px-5 py-12 text-center">
+      <span className="mb-4 grid size-12 place-items-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400"><ShoppingBag aria-hidden="true" className="size-5"/></span>
+      <h2 className="font-semibold">{t(filtered ? "No orders match these filters" : "You have not placed an order yet")}</h2>
+      {filtered ? <Button type="button" variant="outline" className="mt-6" onClick={() => applyFilters({ q: "", status: "", date_from: "", date_to: "" })}>{t("Clear filters")}</Button> : <Button asChild className="mt-6"><Link href="/shop">{t("Continue shopping")}</Link></Button>}
+    </Card> : <>
+      <ul className="grid gap-4">
+        {orders.map(order => <li key={order.id}>
+          <article className="panel overflow-hidden">
+            <div className="flex flex-wrap items-start justify-between gap-3 p-4 sm:p-5">
+              <div className="min-w-0">
+                <h2 className="flex flex-wrap items-center gap-x-2 text-base font-semibold"><span>{t("Order")}</span><Link href={`/account/orders/${order.id}`} className="rounded text-indigo-600 hover:underline dark:text-indigo-400"><bdi dir="ltr">#{order.number.slice(0, 8)}</bdi></Link></h2>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400"><time dateTime={order.created_at}>{dateTime(order.created_at)}</time></p>
+              </div>
+              <StatusBadge status={order.status}/>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-200/80 bg-slate-50/60 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/20 sm:px-5">
+              <dl className="flex min-w-0 flex-wrap gap-x-8 gap-y-3 text-sm">
+                <div><dt className="text-slate-500 dark:text-slate-400">{t("Total")}</dt><dd className="mt-1 font-semibold"><bdi dir="auto">{money(order.total_minor)}</bdi></dd></div>
+                <div><dt className="text-slate-500 dark:text-slate-400">{t("Payment")}</dt><dd className="mt-1">{order.payment_status === "paid" ? t("Paid") : order.payment_method === "cash_on_delivery" ? t("Cash on delivery") : t("Not recorded")}</dd></div>
+              </dl>
+              <Button asChild variant="outline" className="w-full bg-white dark:bg-slate-900 sm:w-auto"><Link href={`/account/orders/${order.id}`}><span>{t("View order")}</span><ArrowLeft aria-hidden="true" className="ltr:rotate-180"/><span className="sr-only"><bdi dir="ltr">#{order.number.slice(0, 8)}</bdi></span></Link></Button>
+            </div>
+          </article>
+        </li>)}
+      </ul>
+      {last > 1 && <div className="mt-5"><Pagination page={page} last={last} onPage={value => setPageText(String(value))}/></div>}
+    </>}
+  </>;
 }
 
 export function StoreOrderDetail({id}:{id:number}){

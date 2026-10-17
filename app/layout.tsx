@@ -27,6 +27,8 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={theme === "dark" ? "dark" : undefined} suppressHydrationWarning>
       <body>
+        <link rel="preload" href={`/fonts/${locale === "ar" ? "IBMPlexSansArabic" : "IBMPlexSans"}-Regular.woff2`} as="font" type="font/woff2" crossOrigin="anonymous"/>
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[100] focus:rounded-control focus:bg-indigo-600 focus:px-4 focus:py-3 focus:text-white">{translate(locale, "Skip to content")}</a>
         <LocaleProvider initialLocale={locale}><ThemeProvider initialTheme={theme}><Providers>{children}</Providers></ThemeProvider></LocaleProvider>
       </body>
     </html>

@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 
 // Source-owned shadcn/ui Radix pattern, styled for this application's palette.
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold leading-none transition [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-control text-sm font-medium leading-none transition [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -80,7 +80,7 @@ export function Input(props: ComponentProps<"input">) {
           : undefined)
       }
       className={cn(
-        "h-11 min-w-0 w-full rounded-xl border border-slate-300 bg-white px-3 text-base sm:text-sm outline-none placeholder:text-slate-500 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:opacity-60 aria-invalid:border-rose-500 dark:border-slate-700 dark:bg-slate-950 dark:placeholder:text-slate-400",
+        "h-11 min-w-0 w-full rounded-control border border-slate-300 bg-white px-3 text-base sm:text-sm outline-none placeholder:text-slate-500 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:opacity-60 aria-invalid:border-rose-500 dark:border-slate-700 dark:bg-slate-950 dark:placeholder:text-slate-400",
         props.className,
       )}
     />
@@ -115,7 +115,7 @@ export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
     <select
       {...props}
       className={cn(
-        "select-control h-11 min-w-0 max-w-full w-full rounded-xl border border-slate-300 bg-white ps-3 pe-10 text-base sm:text-sm text-slate-900 shadow-sm outline-none transition-[border-color,box-shadow] hover:border-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-slate-300 aria-invalid:border-rose-500 aria-invalid:focus:ring-rose-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:border-slate-500 dark:disabled:hover:border-slate-700",
+        "select-control h-11 min-w-0 max-w-full w-full rounded-control border border-slate-300 bg-white ps-3 pe-10 text-base sm:text-sm text-slate-900 shadow-sm outline-none transition-[border-color,box-shadow] hover:border-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-slate-300 aria-invalid:border-rose-500 aria-invalid:focus:ring-rose-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:border-slate-500 dark:disabled:hover:border-slate-700",
         props.className,
       )}
     />
@@ -126,7 +126,7 @@ export function Textarea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
     <textarea
       {...props}
       className={cn(
-        "min-h-28 w-full rounded-xl border border-slate-300 bg-white p-3 text-base sm:text-sm outline-none focus:border-indigo-500 aria-invalid:border-rose-500 dark:border-slate-700 dark:bg-slate-950",
+        "min-h-28 w-full rounded-control border border-slate-300 bg-white p-3 text-base sm:text-sm outline-none focus:border-indigo-500 aria-invalid:border-rose-500 dark:border-slate-700 dark:bg-slate-950",
         props.className,
       )}
     />
@@ -136,7 +136,7 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
-        "min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6",
+        "panel min-w-0 p-5 sm:p-6",
         className,
       )}
       {...props}
@@ -146,9 +146,11 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 export function Badge({
   children,
   tone = "slate",
+  className,
 }: {
   children: ReactNode;
   tone?: "slate" | "green" | "amber" | "red" | "indigo";
+  className?: string;
 }) {
   const { t } = useLocale();
 
@@ -167,6 +169,7 @@ export function Badge({
       className={cn(
         "inline-flex w-fit shrink-0 items-center self-start rounded-full px-2.5 py-1 text-xs font-semibold leading-normal",
         tones[tone],
+        className,
       )}
     >
       {typeof children === "string" ? t(children) : children}
@@ -220,7 +223,7 @@ export function Field({
         <p
           id={`${id}-error`}
           role="alert"
-          className="text-sm text-rose-600 dark:text-rose-400"
+          className="field-error text-sm text-rose-600 dark:text-rose-400"
         >
           {errorText(error)}
         </p>
@@ -310,7 +313,7 @@ export function Dialog({
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm" />
+        <DialogPrimitive.Overlay className="dialog-overlay fixed inset-0 z-40 bg-slate-950/60" />
         <DialogPrimitive.Content
           onOpenAutoFocus={() => {
             returnFocus.current =
@@ -324,7 +327,7 @@ export function Dialog({
               returnFocus.current.focus();
             }
           }}
-          className="fixed left-1/2 top-1/2 z-50 max-h-[90dvh] w-[min(92vw,620px)] -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900"
+          className="dialog-panel panel fixed left-1/2 top-1/2 z-50 max-h-[90dvh] w-[min(92vw,620px)] -translate-x-1/2 -translate-y-1/2 overflow-auto p-6 shadow-floating"
         >
           <DialogPrimitive.Title className="text-lg font-bold">
             {title}
@@ -333,7 +336,7 @@ export function Dialog({
             {t("Review the information below before proceeding.")}{" "}
           </DialogPrimitive.Description>
           <DialogPrimitive.Close
-            className="absolute end-3 top-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="absolute end-2 top-2 grid h-11 w-11 place-items-center rounded-control hover:bg-slate-100 dark:hover:bg-slate-800"
             aria-label={t("Close")}
           >
             <X className="h-4 w-4" />
@@ -372,7 +375,7 @@ export function Pagination({
   return (
     <nav
       aria-label={t("Pagination")}
-      className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-4 text-sm dark:border-slate-800 sm:flex-row"
+      className="pagination-nav flex w-full flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] pt-4 text-sm"
     >
       <p className="shrink-0 text-slate-500 dark:text-slate-400">
         {t("Page")}{" "}
@@ -381,7 +384,7 @@ export function Pagination({
         </span>{" "}
         {t("of")} {format.format(total)}
       </p>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5">
         <Button
           type="button"
           variant="outline"
@@ -397,8 +400,8 @@ export function Pagination({
           <div
             key={String(compact)}
             className={cn(
-              "items-center gap-1",
-              compact ? "flex sm:hidden" : "hidden sm:flex",
+              "items-center gap-0.5",
+              compact ? "pagination-compact flex" : "pagination-wide hidden",
             )}
           >
             {numbers(compact).map((value) =>

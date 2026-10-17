@@ -1,8 +1,10 @@
 import { AppShell } from "@/components/app-shell";
-export default function DashboardLayout({
+import { cookies } from "next/headers";
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <AppShell>{children}</AppShell>;
+  const collapsed = (await cookies()).get("naser-sidebar")?.value === "collapsed";
+  return <AppShell initialCollapsed={collapsed}>{children}</AppShell>;
 }

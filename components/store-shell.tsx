@@ -9,6 +9,7 @@ import { useAuth } from "@/components/providers";
 import { useCart } from "@/components/cart-provider";
 import { Button, Card, Input, Loading } from "@/components/ui";
 import { brand } from "@/lib/brand";
+import { PageTransition } from "@/components/page-transition";
 
 export function StoreShell({ children }: { children: ReactNode }) {
   const { t } = useLocale();
@@ -16,7 +17,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
   const auth = useAuth(),
     cart = useCart();
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen flex-col bg-[var(--surface-canvas)]">
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
         <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
           <Link
@@ -89,9 +90,10 @@ export function StoreShell({ children }: { children: ReactNode }) {
       </header>
       <main
         id="main-content"
+        tabIndex={-1}
         className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6"
       >
-        {children}
+        <PageTransition>{children}</PageTransition>
       </main>
       <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
         <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-3 px-6 py-6 text-xs text-slate-500 dark:text-slate-400">
