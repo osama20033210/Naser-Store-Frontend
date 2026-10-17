@@ -22,8 +22,9 @@ async function parse(response: Response) {
 }
 
 export async function ensureCsrf(force = false): Promise<string> {
+  if (force) csrfToken = null;
   if (csrfToken && !force) return csrfToken;
-  if (!csrfPromise || force)
+  if (!csrfPromise)
     csrfPromise = fetch("/api/v1/auth/csrf", {
       credentials: "include",
       cache: "no-store",
@@ -57,11 +58,31 @@ async function raw(path: string, options: RequestInit = {}) {
   });
 }
 
+/** Coordinate cookie rotation with sign-in/out across tabs where Web Locks are available. */
+async function withAuthLock<T>(callback: () => Promise<T>): Promise<T> {
+  if (typeof navigator !== "undefined" && navigator.locks)
+    return navigator.locks.request("naser-store-auth", callback);
+  return callback();
+}
+
 async function refresh(): Promise<boolean> {
   if (!refreshPromise)
-    refreshPromise = raw("/auth/refresh", { method: "POST" })
-      .then((response) => response.ok)
-      .catch(() => false)
+    refreshPromise = withAuthLock(async () => {
+      // Another tab may have rotated the cookie while this request waited for the lock.
+      const current = await raw("/auth/me", {signal: AbortSignal.timeout(15000)});
+      if (current.ok) return true;
+      if (current.status !== 401)
+        throw new ApiError(current.status, (await parse(current)) ?? {});
+      let response = await raw("/auth/refresh", {method: "POST", signal: AbortSignal.timeout(15000)});
+      if (response.status === 419) {
+        await ensureCsrf(true);
+        response = await raw("/auth/refresh", {method: "POST", signal: AbortSignal.timeout(15000)});
+      }
+      if (response.status === 401) return false;
+      if (!response.ok)
+        throw new ApiError(response.status, (await parse(response)) ?? {});
+      return true;
+    })
       .finally(() => {
         refreshPromise = null;
       });
@@ -74,11 +95,17 @@ export async function api<T>(
   options: RequestInit = {},
   retry = true,
 ): Promise<T> {
-  let response = await raw(path, options);
-  if (response.status === 419 && retry) {
-    await ensureCsrf(true);
-    response = await raw(path, options);
-  }
+  const request = async () => {
+    let response = await raw(path, options);
+    if (response.status === 419 && retry) {
+      await ensureCsrf(true);
+      response = await raw(path, options);
+    }
+    return response;
+  };
+  let response = ["/auth/login", "/auth/register", "/auth/logout"].includes(path)
+    ? await withAuthLock(request)
+    : await request();
   const authPath =
     path.startsWith("/auth/register") ||
     path.startsWith("/auth/login") ||
@@ -88,7 +115,7 @@ export async function api<T>(
     response = await raw(path, options);
   const body = await parse(response);
   if (!response.ok) {
-    if (response.status === 401 && !authPath && path !== "/auth/me")
+    if (response.status === 401 && !authPath)
       window.dispatchEvent(new Event("auth:expired"));
     if (response.status === 419) csrfToken = null;
     throw new ApiError(response.status, body ?? {});

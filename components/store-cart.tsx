@@ -57,20 +57,21 @@ function CheckoutForm({quote,profile,refreshing,refreshQuote}:{quote:CartQuote;p
   const { t, errorText, money } = useLocale();
 
  const cart=useCart(),router=useRouter(),client=useQueryClient(),auth=useAuth();
- const attempt=useRef<{fingerprint:string;key:string}|null>(null),[uncertain,setUncertain]=useState(false);
+ const attempt=useRef<{fingerprint:string;key:string;body:string}|null>(null),[uncertain,setUncertain]=useState(false);
  const {register,handleSubmit,setError,formState:{errors,isSubmitting}}=useForm<Values>({resolver:zodResolver(checkoutSchema),defaultValues:{shipping_name:profile.name,shipping_phone:profile.phone??"",shipping_address:profile.address??"",notes:""}});
  const submit=handleSubmit(async values=>{
   if(!uncertain){try{const latest=await refreshQuote();if(!latest.can_checkout||quoteChanged(quote,latest)){toast.error(t("Prices or availability changed. Review the updated order before submitting again."));return}}catch(error){toast.error(errorText(error instanceof Error?error.message:"Unable to load data."));return}}
-  const payload={...values,items:cart.items};const body=JSON.stringify(payload);
+  // An uncertain retry keeps the original intent if the mounted form's cart changes.
+  const body=uncertain&&attempt.current?attempt.current.body:JSON.stringify({...values,items:cart.items});
   const fingerprint=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(body)))).map(byte=>byte.toString(16).padStart(2,"0")).join("");
   const storageKey=`naser-orderly-checkout-${auth.user!.id}`;
   if(!attempt.current||attempt.current.fingerprint!==fingerprint){
    let key=crypto.randomUUID();
    try{const saved=JSON.parse(sessionStorage.getItem(storageKey)??"null");key=savedCheckoutKey(saved,fingerprint)??key;sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,key}))}catch{/* Retry protection still works in memory if storage is unavailable. */}
-   attempt.current={fingerprint,key};
+   attempt.current={fingerprint,key,body};
   }
   try{
-   const result=await api<Resource<StoreOrder>>("/store/orders",{method:"POST",body:JSON.stringify({...payload,checkout_key:attempt.current.key})});
+   const result=await api<Resource<StoreOrder>>("/store/orders",{method:"POST",body:JSON.stringify({...JSON.parse(attempt.current.body),checkout_key:attempt.current.key})});
    try{sessionStorage.removeItem(storageKey)}catch{/* Browser storage is optional. */}
    cart.clear();await client.invalidateQueries({queryKey:["store","orders"]});toast.success(t("Order #{number} placed. Pay on delivery.",{number:result.data.number}),{action:{label:t("View order"),onClick:()=>router.push(`/account/orders/${result.data.id}`)}});router.replace(`/account/orders/${result.data.id}?placed=1`);
   }catch(error){

@@ -1,5 +1,9 @@
 /** Interface copy only. Catalog and customer data are never translated automatically. */
 export const arabic: Record<string, string> = {
+  "Retry original adjustment": "إعادة محاولة التعديل الأصلي",
+  "The last adjustment could not be confirmed. Retry the original adjustment or check movement history before starting another.": "تعذّر تأكيد نتيجة التعديل الأخير. أعد محاولة التعديل الأصلي أو راجع سجل الحركات قبل بدء تعديل آخر.",
+  "Check the order list": "تحقّق من قائمة الطلبات",
+  "Your original order details are kept for retry. Check the order list before starting again.": "تبقى بيانات الطلب الأصلي محفوظة لإعادة المحاولة. تحقّق من القائمة قبل بدء طلب جديد.",
   "Page {page}": "الصفحة {page}",
   "Edit product": "تعديل المنتج",
   "New product": "منتج جديد",
