@@ -265,7 +265,17 @@ export function Skeleton({ className }: { className?: string }) {
 }
 
 export function BoxesLoader({ className }: { className?: string }) {
-  return <span aria-hidden="true" className={cn("boxes-loader inline-grid h-12 w-12 shrink-0 place-items-center text-indigo-600 dark:text-indigo-400", className)}><Boxes className="h-full w-full" strokeWidth={1.5}/></span>;
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        "boxes-loader inline-grid h-12 w-12 shrink-0 place-items-center text-indigo-600 dark:text-indigo-400",
+        className,
+      )}
+    >
+      <Boxes className="h-full w-full" strokeWidth={1.5} />
+    </span>
+  );
 }
 
 export function Loading() {
@@ -277,8 +287,9 @@ export function Loading() {
       aria-label={t("Loading")}
       className="flex min-h-56 flex-col items-center justify-center gap-5 py-8"
     >
-      <div className="grid h-20 w-20 place-items-center rounded-2xl bg-indigo-50 dark:bg-indigo-500/10"><BoxesLoader/></div>
-      <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{t("Loading")}</span>
+      <div className="grid h-20 w-20 place-items-center rounded-2xl bg-indigo-50 dark:bg-indigo-500/10">
+        <BoxesLoader />
+      </div>
     </div>
   );
 }
@@ -346,17 +357,90 @@ export function Pagination({
   const total = Math.max(last, 1);
   const format = new Intl.NumberFormat(locale);
   const numbers = (compact: boolean): (number | string)[] => {
-    const pages = [...new Set([1, total, page, ...(compact ? [] : [page - 1, page + 1])])]
-      .filter(value => value >= 1 && value <= total).sort((a, b) => a - b);
-    return pages.flatMap((value, index) => index > 0 && value - pages[index - 1] > 1 ? [`gap-${value}`, value] : [value]);
+    const pages = [
+      ...new Set([1, total, page, ...(compact ? [] : [page - 1, page + 1])]),
+    ]
+      .filter((value) => value >= 1 && value <= total)
+      .sort((a, b) => a - b);
+    return pages.flatMap((value, index) =>
+      index > 0 && value - pages[index - 1] > 1
+        ? [`gap-${value}`, value]
+        : [value],
+    );
   };
 
-  return <nav aria-label={t("Pagination")} className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-4 text-sm dark:border-slate-800 sm:flex-row">
-    <p className="shrink-0 text-slate-500 dark:text-slate-400">{t("Page")} <span className="font-semibold text-slate-900 dark:text-slate-100">{format.format(page)}</span> {t("of")} {format.format(total)}</p>
-    <div className="flex items-center gap-1">
-      <Button type="button" variant="outline" size="icon" aria-label={t("Previous")} title={t("Previous")} disabled={page <= 1} onClick={() => onPage(Math.min(page - 1, total))}><ChevronLeft aria-hidden="true" className="rtl:rotate-180"/></Button>
-      {[true, false].map(compact => <div key={String(compact)} className={cn("items-center gap-1", compact ? "flex sm:hidden" : "hidden sm:flex")}>{numbers(compact).map(value => typeof value === "number" ? <Button key={value} type="button" size="icon" variant={value === page ? "default" : "ghost"} aria-current={value === page ? "page" : undefined} aria-label={t("Page {page}", {page:format.format(value)})} onClick={() => {if(value !== page)onPage(value)}} className="tabular-nums">{format.format(value)}</Button> : <span key={value} aria-hidden="true" className="w-4 text-center text-slate-400">…</span>)}</div>)}
-      <Button type="button" variant="outline" size="icon" aria-label={t("Next")} title={t("Next")} disabled={page >= total} onClick={() => onPage(page + 1)}><ChevronLeft aria-hidden="true" className="ltr:rotate-180"/></Button>
-    </div>
-  </nav>;
+  return (
+    <nav
+      aria-label={t("Pagination")}
+      className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-4 text-sm dark:border-slate-800 sm:flex-row"
+    >
+      <p className="shrink-0 text-slate-500 dark:text-slate-400">
+        {t("Page")}{" "}
+        <span className="font-semibold text-slate-900 dark:text-slate-100">
+          {format.format(page)}
+        </span>{" "}
+        {t("of")} {format.format(total)}
+      </p>
+      <div className="flex items-center gap-1">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label={t("Previous")}
+          title={t("Previous")}
+          disabled={page <= 1}
+          onClick={() => onPage(Math.min(page - 1, total))}
+        >
+          <ChevronLeft aria-hidden="true" className="rtl:rotate-180" />
+        </Button>
+        {[true, false].map((compact) => (
+          <div
+            key={String(compact)}
+            className={cn(
+              "items-center gap-1",
+              compact ? "flex sm:hidden" : "hidden sm:flex",
+            )}
+          >
+            {numbers(compact).map((value) =>
+              typeof value === "number" ? (
+                <Button
+                  key={value}
+                  type="button"
+                  size="icon"
+                  variant={value === page ? "default" : "ghost"}
+                  aria-current={value === page ? "page" : undefined}
+                  aria-label={t("Page {page}", { page: format.format(value) })}
+                  onClick={() => {
+                    if (value !== page) onPage(value);
+                  }}
+                  className="tabular-nums"
+                >
+                  {format.format(value)}
+                </Button>
+              ) : (
+                <span
+                  key={value}
+                  aria-hidden="true"
+                  className="w-4 text-center text-slate-400"
+                >
+                  …
+                </span>
+              ),
+            )}
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label={t("Next")}
+          title={t("Next")}
+          disabled={page >= total}
+          onClick={() => onPage(page + 1)}
+        >
+          <ChevronLeft aria-hidden="true" className="ltr:rotate-180" />
+        </Button>
+      </div>
+    </nav>
+  );
 }
