@@ -9,6 +9,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AddToCart, StoreProductCard } from "@/components/store-product-card";
+import { StoreProductGallery } from "@/components/store-product-gallery";
+import { StoreProductPrice, PromotionCountdown } from "@/components/store-product-price";
 import { decimalToMinor, minorToDecimal } from "@/lib/money";
 import { useLocale } from "@/components/locale-provider";
 import { setListFilters, useListFilter } from "@/components/use-list-filters";
@@ -37,6 +39,7 @@ export function StoreCatalog() {
     [sort] = useListFilter("sort", "name"), [pageText] = useListFilter("page", "1"),
     [minimum] = useListFilter("min_price_minor", ""), [maximum] = useListFilter("max_price_minor", ""),
     [availability] = useListFilter("in_stock", "");
+  const [onSale] = useListFilter("on_sale", "");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const page = Math.max(1, Number(pageText) || 1);
   const [field, direction] = sort.split(":");
@@ -45,8 +48,9 @@ export function StoreCatalog() {
   if (minimum) parameters.set("min_price_minor", minimum);
   if (maximum) parameters.set("max_price_minor", maximum);
   if (availability) parameters.set("in_stock", availability);
+  if (onSale) parameters.set("on_sale", onSale);
   const products = useQuery({
-    queryKey: ["store", "products", q, category, sort, page, minimum, maximum, availability],
+    queryKey: ["store", "products", q, category, sort, page, minimum, maximum, availability, onSale],
     queryFn: ({ signal }) => api<Page<StoreProduct>>(`/store/products?${parameters}`, { signal }),
   });
   const categories = useQuery({
@@ -54,9 +58,9 @@ export function StoreCatalog() {
     queryFn: ({ signal }) => api<Page<Category>>("/store/categories?per_page=100", { signal }),
     staleTime: 60000,
   });
-  const filtered = Boolean(q || category || minimum || maximum || availability || sort !== "name" || page > 1);
-  const clear = () => setListFilters({ q: null, category_id: null, min_price_minor: null, max_price_minor: null, in_stock: null, sort: null, page: null });
-  const filterProps = { categories: categories.data?.data ?? [], q, category, minimum, maximum, availability, onApplied: () => setFiltersOpen(false), clear };
+  const filtered = Boolean(q || category || minimum || maximum || availability || onSale || sort !== "name" || page > 1);
+  const clear = () => setListFilters({ q: null, category_id: null, min_price_minor: null, max_price_minor: null, in_stock: null, on_sale: null, sort: null, page: null });
+  const filterProps = { categories: categories.data?.data ?? [], q, category, minimum, maximum, availability, onSale, onApplied: () => setFiltersOpen(false), clear };
   return <section id="products" className="scroll-mt-44">
     <div className="mb-7 border-b border-slate-200 pb-6 dark:border-slate-800">
       <p className="mb-2 text-sm text-slate-500 dark:text-slate-400"><Link href="/">{t("Home")}</Link><span aria-hidden="true" className="mx-2">/</span>{t("Shop")}</p>
@@ -67,6 +71,7 @@ export function StoreCatalog() {
       <aside className="panel hidden min-w-0 p-4 lg:block"><h2 className="mb-5 font-semibold">{t("Filter products")}</h2><CatalogFilters {...filterProps}/></aside>
       <div className="min-w-0">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          {onSale && <Button type="button" variant="secondary" onClick={() => setListFilters({ on_sale: null, page: null })}>{t("Promotion filter · clear")}</Button>}
           <p role="status" className="text-sm text-slate-500 dark:text-slate-400">{products.data ? t("{count} products available to browse", { count: products.data.meta.total }) : t("Products from our current catalog")}</p>
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <Button type="button" variant="outline" className="lg:hidden" onClick={() => setFiltersOpen(true)}><SlidersHorizontal aria-hidden="true"/>{t("Filters")}</Button>
@@ -87,19 +92,19 @@ export function StoreCatalog() {
 }
 
 type CatalogFilterProps = {
-  categories: Category[]; q: string; category: string; minimum: string; maximum: string; availability: string;
+  categories: Category[]; q: string; category: string; minimum: string; maximum: string; availability: string; onSale: string;
   onApplied: () => void; clear: () => void;
 };
-function CatalogFilters({ categories, q, category, minimum, maximum, availability, onApplied, clear }: CatalogFilterProps) {
+function CatalogFilters({ categories, q, category, minimum, maximum, availability, onSale, onApplied, clear }: CatalogFilterProps) {
   const { t, errorText } = useLocale();
   const amount = (value: string) => value && Number.isSafeInteger(Number(value)) && Number(value) >= 0 ? minorToDecimal(Number(value)) : "";
-  const form = useForm({ values: { q, category, minimum: amount(minimum), maximum: amount(maximum), availability } });
+  const form = useForm({ values: { q, category, minimum: amount(minimum), maximum: amount(maximum), availability, onSale } });
   return <form className="grid gap-4" onSubmit={form.handleSubmit(values => {
     let min: number | null = null, max: number | null = null;
     try { if (values.minimum.trim()) min = decimalToMinor(values.minimum); } catch (error) { form.setError("minimum", { message: errorText((error as Error).message) }); return; }
     try { if (values.maximum.trim()) max = decimalToMinor(values.maximum); } catch (error) { form.setError("maximum", { message: errorText((error as Error).message) }); return; }
     if (min !== null && max !== null && max < min) { form.setError("maximum", { message: t("Maximum price must be at least the minimum price.") }); return; }
-    setListFilters({ q: values.q.trim() || null, category_id: values.category || null, min_price_minor: min === null ? null : String(min), max_price_minor: max === null ? null : String(max), in_stock: values.availability || null, page: null });
+    setListFilters({ q: values.q.trim() || null, category_id: values.category || null, min_price_minor: min === null ? null : String(min), max_price_minor: max === null ? null : String(max), in_stock: values.availability || null, on_sale: values.onSale || null, page: null });
     onApplied();
   })}>
     <Field label={t("Search products")}><Input type="search" maxLength={100} placeholder={t("Search products…")} {...form.register("q")}/></Field>
@@ -107,8 +112,9 @@ function CatalogFilters({ categories, q, category, minimum, maximum, availabilit
     <Field label={t("Minimum price (USD)")} error={form.formState.errors.minimum?.message}><Input dir="ltr" inputMode="decimal" placeholder="0.00" {...form.register("minimum")}/></Field>
     <Field label={t("Maximum price (USD)")} error={form.formState.errors.maximum?.message}><Input dir="ltr" inputMode="decimal" placeholder={t("No limit")} {...form.register("maximum")}/></Field>
     <Field label={t("Availability")}><Select {...form.register("availability")}><option value="">{t("All products")}</option><option value="1">{t("In stock")}</option><option value="0">{t("Out of stock")}</option></Select></Field>
+    <Field label={t("Offers")}><Select {...form.register("onSale")}><option value="">{t("All prices")}</option><option value="1">{t("Offers only")}</option><option value="0">{t("Regular prices only")}</option></Select></Field>
     <Button type="submit">{t("Apply filters")}</Button>
-    <Button type="button" variant="ghost" onClick={() => { form.reset({ q: "", category: "", minimum: "", maximum: "", availability: "" }); clear(); onApplied(); }}>{t("Clear filters")}</Button>
+    <Button type="button" variant="ghost" onClick={() => { form.reset({ q: "", category: "", minimum: "", maximum: "", availability: "", onSale: "" }); clear(); onApplied(); }}>{t("Clear filters")}</Button>
   </form>;
 }
 
@@ -120,7 +126,6 @@ function ProductGridLoading() {
 export function StoreProductDetail({ id }: { id: number }) {
   const { t, money } = useLocale(),
     [quantity, setQuantity] = useState(1);
-  const [zoomOpen, setZoomOpen] = useState(false);
   const query = useQuery({
     queryKey: ["store", "product", id],
     queryFn: ({ signal }) =>
@@ -145,12 +150,7 @@ export function StoreProductDetail({ id }: { id: number }) {
         {t("Back to the shop")}
       </Link>
       <div className="grid items-start gap-6 lg:grid-cols-[1fr_1.1fr]">
-        <div className="min-w-0"><ProductMedia
-          large
-          name={product.name}
-          category={product.category?.name}
-          src={product.image_url}
-        />{product.image_url && <Button type="button" variant="outline" className="mt-3" onClick={() => setZoomOpen(true)}>{t("View larger image")}</Button>}</div>
+        <StoreProductGallery key={product.id} product={product}/>
         <Card>
           <p className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">
             {product.category?.name}
@@ -159,13 +159,12 @@ export function StoreProductDetail({ id }: { id: number }) {
             {product.name}
           </h1>
           <div className="my-4 flex flex-wrap items-center gap-4">
-            <p className="text-xl font-semibold tabular-nums">
-              <bdi>{money(product.price_minor)}</bdi>
-            </p>
+            <StoreProductPrice product={product} large/>
             <Badge tone={product.in_stock ? "green" : "slate"}>
               {t(product.in_stock ? "In stock" : "Out of stock")}
             </Badge>
           </div>
+          {product.promotion_ends_at && <PromotionCountdown endsAt={product.promotion_ends_at}/>}
           {product.description && (
             <p className="border-y border-slate-200 py-5 text-base leading-7 whitespace-pre-wrap dark:border-slate-800">
               {product.description}
@@ -216,7 +215,6 @@ export function StoreProductDetail({ id }: { id: number }) {
         </Card>
       </div>
       <RelatedProducts product={product}/>
-      <Dialog open={zoomOpen} onOpenChange={setZoomOpen} title={product.name} className="storefront"><ProductMedia large name={product.name} src={product.image_url}/></Dialog>
     </>
   );
 }

@@ -152,7 +152,7 @@ export function Lookup({
   value: number;
   onChange: (
     id: number,
-    row: { id: number; name: string; price_minor?: number },
+    row: { id: number; name: string; price_minor?: number; selling_price_minor?: number },
   ) => void;
   label: string;
   selectedLabel?: string;

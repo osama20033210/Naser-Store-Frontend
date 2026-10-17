@@ -1,6 +1,10 @@
 import type { Category, OrderItem, OrderStatus } from "@/lib/types";
 
 export type StoreProduct = {
+  images?: { id: number; url: string }[];
+  regular_price_minor?: number;
+  promotion_ends_at?: string | null;
+  price_changes_at?: string | null;
   image_url?: string | null;
   id:number; name:string; sku:string; description:string|null; price_minor:number;
   in_stock:boolean; max_order_quantity:number; category?:Category;

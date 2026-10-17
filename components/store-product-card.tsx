@@ -8,6 +8,7 @@ import { useLocale } from "@/components/locale-provider";
 import { ProductMedia } from "@/components/product-media";
 import { Badge, Button, Card } from "@/components/ui";
 import type { StoreProduct } from "@/lib/store-types";
+import { StoreProductPrice } from "@/components/store-product-price";
 
 export function AddToCart({ product, quantity = 1 }: { product: StoreProduct; quantity?: number }) {
   const { t } = useLocale(), cart = useCart();
@@ -27,7 +28,7 @@ export function StoreProductCard({ product }: { product: StoreProduct }) {
     <div className="flex flex-1 flex-col gap-3 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2"><p className="min-w-0 truncate text-sm text-slate-500 dark:text-slate-400">{product.category?.name}</p><Badge tone={product.in_stock ? "green" : "slate"}>{t(product.in_stock ? "In stock" : "Sold out")}</Badge></div>
       <Link href={`/shop/${product.id}`} className="line-clamp-2 text-base font-semibold leading-relaxed hover:text-indigo-600 dark:hover:text-indigo-300">{product.name}</Link>
-      <p className="text-base font-semibold tabular-nums"><bdi>{money(product.price_minor)}</bdi></p>
+      <StoreProductPrice product={product}/>
       <div className="mt-auto pt-1"><AddToCart product={product}/></div>
     </div>
   </Card>;

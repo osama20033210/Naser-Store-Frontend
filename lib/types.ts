@@ -13,6 +13,11 @@ export type Category = {
   products_count?: number;
 };
 export type Product = {
+  images?: { id: number; url: string }[];
+  selling_price_minor?: number;
+  sale_price_minor?: number | null;
+  sale_starts_at?: string | null;
+  sale_ends_at?: string | null;
   image_url?: string | null;
   id: number;
   category_id: number;

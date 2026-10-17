@@ -21,6 +21,7 @@ const links = [
   { href: "/dashboard/categories", label: "Categories", icon: Tags, permission: "categories.view", group: "Operations" },
   { href: "/dashboard/customers", label: "Customers", icon: Users, permission: "customers.view", group: "Operations" },
   { href: "/dashboard/inventory", label: "Inventory", icon: Warehouse, permission: "inventory.view", group: "Operations" },
+  { href: "/dashboard/storefront", label: "Storefront content", icon: ShoppingBag, permission: "storefront.manage", group: "Operations" },
   { href: "/dashboard/settings", label: "Settings", icon: Settings, group: "Account" },
 ];
 

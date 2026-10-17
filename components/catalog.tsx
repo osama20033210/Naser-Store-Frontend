@@ -17,6 +17,7 @@ import { Badge, Button, Card, Dialog, Field, Input, Loading, Pagination, Select,
 import { api, ApiError } from "@/lib/api";
 import { ProductImageField } from "@/components/product-image-field";
 import { ProductMedia } from "@/components/product-media";
+import { ProductGalleryManager } from "@/components/product-gallery-manager";
 import type { Category, Customer, Order, Page, Product, Resource } from "@/lib/types";
 
 export type Module="products"|"categories"|"customers";
@@ -77,6 +78,7 @@ function CatalogFormContent({module,id}:{module:Module;id?:number}){
       </div>
     </div>
   </form>
+  {id && <ProductGalleryManager id={id} images={entity?.images ?? []}/>}
  </div>;
  return <><Link className="mb-5 inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400" href={`/dashboard/${module}`}><ArrowLeft className="h-4 w-4"/>{t("Back to {name}",{name:t(module)})}</Link><PageHeading title={t(id ? "Edit {name}" : "New {name}", {name:t(config.singular)})} description={t("Keep details accurate so your team can work confidently.")}/><Card className="max-w-3xl"><form onSubmit={submit} className="grid gap-5 sm:grid-cols-2">{renderFields(fields)}<div className="flex gap-3 border-t border-slate-100 pt-5 dark:border-slate-800 sm:col-span-2"><Button disabled={isSubmitting||Boolean(errors.image)}>{isSubmitting?t("Saving…"):t("Save changes")}</Button><Button asChild type="button" className="bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"><Link href={`/dashboard/${module}`}>{t("Cancel")}</Link></Button></div></form></Card></>;
 }
