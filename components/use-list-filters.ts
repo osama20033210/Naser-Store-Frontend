@@ -15,6 +15,7 @@ const snapshot = () => {
 /** Apply related filters together so a search issues one request and resets its page atomically. */
 export function setListFilters(values: Record<string, string | null>) {
   const url = new URL(window.location.href);
+  url.search = snapshot();
   for (const [name, value] of Object.entries(values)) {
     if (value === null) url.searchParams.delete(name); else url.searchParams.set(name, value);
   }

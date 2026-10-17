@@ -2,6 +2,37 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Storefront palette is scoped so employee screens keep their existing identity. */
+.storefront {
+  --color-indigo-50: #fff7ed;
+  --color-indigo-100: #ffedd5;
+  --color-indigo-200: #fed7aa;
+  --color-indigo-300: #fdba74;
+  --color-indigo-400: #fb923c;
+  --color-indigo-500: #b83b0c;
+  --color-indigo-600: #c2410c;
+  --color-indigo-700: #9a3412;
+  --color-indigo-800: #7c2d12;
+  --color-indigo-900: #431407;
+  --surface-canvas: #fff;
+  --surface-panel: #fff;
+  --shadow-panel: 0 1px 3px rgb(24 24 27 / .025);
+}
+.dark .storefront {
+  --surface-canvas: #0b0e16;
+  --surface-panel: #121723;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .store-product-card { transition: transform 180ms ease, box-shadow 180ms ease; }
+  .store-product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgb(24 24 27 / .07); }
+  .store-product-card img { transition: transform 220ms ease; }
+  .store-product-card:hover img { transform: scale(1.025); }
+  .store-category { transition: border-color 180ms ease, transform 180ms ease; }
+  .store-category:hover { transform: translateY(-2px); }
+  .store-hero { animation: store-reveal 220ms ease both; }
+  @keyframes store-reveal { from { opacity: .8; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
 @font-face {
   font-family: "Naser Sans";
   src: url("/fonts/IBMPlexSans-Regular.woff2") format("woff2");

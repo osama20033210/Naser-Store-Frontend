@@ -14,7 +14,7 @@ export default function Layout({children}:{children:React.ReactNode}){
   ];
   return <CustomerGate>
     <div className="mx-auto grid max-w-6xl items-start gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-8">
-      <aside className="min-w-0 lg:sticky lg:top-28">
+      <aside className="min-w-0 lg:sticky lg:top-48">
         <p className="mb-3 px-1 text-sm font-semibold text-slate-500 dark:text-slate-400">{t("My account")}</p>
         <nav aria-label={t("Customer account")} className="panel grid grid-cols-2 gap-1 p-1.5 lg:grid-cols-1">
           {links.map(({ href, label, icon: Icon, active }) => <Link key={href} href={href} aria-current={active ? "page" : undefined}

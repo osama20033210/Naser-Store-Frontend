@@ -46,9 +46,9 @@ export default function LoginPage() {
     }
   });
   return (
-    <main className="grid min-h-screen lg:grid-cols-[1.1fr_.9fr]">
+    <main id="main-content" className="storefront grid min-h-screen bg-[var(--surface-canvas)] lg:grid-cols-[1.1fr_.9fr]">
       <section className="relative hidden overflow-hidden bg-slate-950 p-12 text-white lg:flex lg:flex-col lg:justify-between">
-        <div className="absolute inset-0 opacity-40 [background:radial-gradient(circle_at_25%_20%,#4f46e5,transparent_35%),radial-gradient(circle_at_80%_75%,#0891b2,transparent_30%)]" />
+        <div className="absolute inset-0 opacity-30 [background:radial-gradient(circle_at_25%_20%,#c2410c,transparent_45%)]" />
         <div className="relative flex items-center gap-3 text-xl font-bold">
           <span className="rounded-xl bg-white/10 p-2">
             <Boxes />

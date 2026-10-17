@@ -58,7 +58,8 @@ export function LocaleProvider({
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
-    document.title = `${brand.name} — ${translate(locale, path === "/login" ? "Sign in" : "Shop")}`;
+    const pageTitle = path === "/" ? "Home" : path === "/login" ? "Sign in" : path === "/contact" ? "Contact" : path === "/information" ? "Ordering & payment" : path === "/policies" ? "Store policies" : path === "/cart" ? "Cart" : path === "/checkout" ? "Checkout" : path.startsWith("/account/orders") ? "My orders" : path === "/account" ? "Your profile" : "Shop";
+    document.title = `${brand.name} — ${translate(locale, pageTitle)}`;
   }, [locale, path]);
   return (
     <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>

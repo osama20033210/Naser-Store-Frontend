@@ -301,11 +301,15 @@ export function Dialog({
   onOpenChange,
   title,
   children,
+  className,
+  drawer = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   children: ReactNode;
+  className?: string;
+  drawer?: boolean;
 }) {
   const { t } = useLocale();
   const returnFocus = useRef<HTMLElement | null>(null);
@@ -327,7 +331,7 @@ export function Dialog({
               returnFocus.current.focus();
             }
           }}
-          className="dialog-panel panel fixed left-1/2 top-1/2 z-50 max-h-[90dvh] w-[min(92vw,620px)] -translate-x-1/2 -translate-y-1/2 overflow-auto p-6 shadow-floating"
+          className={cn(drawer ? "drawer-panel panel fixed inset-y-0 end-0 z-50 h-dvh w-[min(92vw,360px)] overflow-auto rounded-none p-6 shadow-floating" : "dialog-panel panel fixed left-1/2 top-1/2 z-50 max-h-[90dvh] w-[min(92vw,620px)] -translate-x-1/2 -translate-y-1/2 overflow-auto p-6 shadow-floating", className)}
         >
           <DialogPrimitive.Title className="text-lg font-bold">
             {title}
