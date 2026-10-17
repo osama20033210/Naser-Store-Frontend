@@ -16,7 +16,7 @@ import type { Category, Page, Resource } from "@/lib/types";
 
 function StoreCategoryTile({ category, product }: { category: Category; product?: StoreProduct }) {
   return <Link href={`/shop?category_id=${category.id}`} className="store-category flex min-h-28 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 hover:border-indigo-300 dark:border-slate-800 dark:bg-slate-900">
-    {product ? <ProductMedia name={product.name} src={product.image_url} fit="cover"/> : <span aria-hidden="true" className="m-4 mb-0 grid size-9 place-items-center rounded-xl bg-white text-indigo-600 dark:bg-slate-800 dark:text-indigo-300"><Package className="size-4"/></span>}
+    {category.image_url || product ? <ProductMedia name={category.name} src={category.image_url || product?.image_url} fit="cover"/> : <span aria-hidden="true" className="m-4 mb-0 grid size-9 place-items-center rounded-xl bg-white text-indigo-600 dark:bg-slate-800 dark:text-indigo-300"><Package className="size-4"/></span>}
     <span className="mt-auto break-words p-4 text-sm font-semibold">{category.name}</span>
   </Link>;
 }

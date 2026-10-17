@@ -1,5 +1,9 @@
 /** Interface copy only. Catalog and customer data are never translated automatically. */
 export const arabic: Record<string, string> = {
+  "Illustrative photo; the actual product may differ.": "صورة توضيحية؛ قد يختلف شكل المنتج الفعلي.",
+  "Photo": "الصورة",
+  "Image license": "ترخيص الصورة",
+  "Resized for display.": "تم تصغير الصورة وتهيئتها للعرض.",
   "Promotion filter · clear": "فلتر العروض · مسح",
   "Offers": "العروض",
   "All prices": "جميع الأسعار",

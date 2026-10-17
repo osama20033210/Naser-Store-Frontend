@@ -4,16 +4,19 @@ import { ImagePlus, Upload, Trash2 } from "lucide-react";
 import { useLocale } from "@/components/locale-provider";
 import { ProductMedia } from "@/components/product-media";
 import { Button } from "@/components/ui";
+import { CatalogImageCredit } from "@/components/catalog-image-credit";
 
-export function ProductImageField({name,currentUrl,file,remove,disabled,error,onFile,onRemove,onError}: {
-  name:string;currentUrl?:string|null;file:File|null;remove:boolean;disabled:boolean;error?:string;
+export function ProductImageField({name,currentUrl,fallbackUrl,credit,file,remove,disabled,error,onFile,onRemove,onError}: {
+  name:string;currentUrl?:string|null;fallbackUrl?:string|null;file:File|null;remove:boolean;disabled:boolean;error?:string;
+  credit?: { author: string; source_url: string; license_url: string } | null;
   onFile:(file:File|null)=>void;onRemove:(remove:boolean)=>void;onError:(message:string)=>void;
 }) {
   const {t,errorText}=useLocale(),[preview,setPreview]=useState<string|null>(null);
   const inputRef=useRef<HTMLInputElement>(null),descriptionId=useId(),errorId=useId();
   useEffect(()=>{if(!file){setPreview(null);return}const url=URL.createObjectURL(file);setPreview(url);return()=>URL.revokeObjectURL(url)},[file]);
-  const source=file?preview:remove?null:currentUrl;
+  const source=file?preview:remove?fallbackUrl:currentUrl||fallbackUrl;
   return <section className="grid gap-4"><h2 className="text-lg font-semibold">{t("Product image")}</h2>
+    {!file && source === fallbackUrl && fallbackUrl && <CatalogImageCredit credit={credit}/>}
     {source?<ProductMedia name={name||t("Product")} src={source} large/>:<div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 text-slate-500 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-400"><ImagePlus className="h-9 w-9" strokeWidth={1.5} aria-hidden="true"/><span className="text-sm">{t("No image provided")}</span></div>}
     <input ref={inputRef} type="file" className="hidden" aria-label={t("Choose image")} accept="image/jpeg,image/png,image/webp" disabled={disabled} onChange={event=>{
     const selected=event.target.files?.[0];event.target.value="";if(!selected)return;

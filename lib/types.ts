@@ -7,12 +7,16 @@ export type User = {
   account_type: "staff" | "customer";
 };
 export type Category = {
+  image_url?: string | null;
   id: number;
   name: string;
   description?: string | null;
   products_count?: number;
 };
 export type Product = {
+  uploaded_image_url?: string | null;
+  image_credit?: { author: string; source_url: string; license_url: string } | null;
+  image_is_illustrative?: boolean;
   images?: { id: number; url: string }[];
   selling_price_minor?: number;
   sale_price_minor?: number | null;
