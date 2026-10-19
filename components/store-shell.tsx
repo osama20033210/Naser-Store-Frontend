@@ -97,7 +97,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-3 border-t border-slate-100 px-4 py-3 dark:border-slate-800 sm:px-6">
           <Button type="button" variant="outline" className="md:hidden" onClick={() => setMenuOpen(true)}><Menu aria-hidden="true"/>{t("Menu")}</Button>
           <nav aria-label={t("Browse store")} className="hidden shrink-0 items-center gap-1 text-sm font-medium md:flex">
-            {[{ href: "/", label: "Home" }, { href: "/shop", label: "Shop" }, { href: "/journal", label: "Journal" }, { href: "/contact", label: "Contact" }].map(item => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded-control px-3 ${pathname === item.href ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300" : "hover:bg-slate-100 dark:hover:bg-slate-800"}`}>{t(item.label)}</Link>)}
+            {[{ href: "/", label: "Home" }, { href: "/shop", label: "Shop" }, { href: "/blog", label: "Blog" }, { href: "/contact", label: "Contact" }].map(item => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded-control px-3 ${pathname === item.href ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300" : "hover:bg-slate-100 dark:hover:bg-slate-800"}`}>{t(item.label)}</Link>)}
             <StoreCategoryMenu/>
           </nav>
           <form role="search" className="relative ms-auto min-w-0 flex-1 md:max-w-md" action="/shop" onSubmit={event => { event.preventDefault(); const data = new FormData(event.currentTarget); router.push(`/shop?q=${encodeURIComponent(String(data.get("q") ?? "").trim())}`); }}>
@@ -128,7 +128,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </footer>
-      <Dialog open={menuOpen} onOpenChange={setMenuOpen} title={t("Browse store")} className="storefront" drawer><nav className="grid gap-2">{[{ href: "/", label: "Home" }, { href: "/shop", label: "Shop" }, { href: "/cart", label: "Cart" }, { href: "/journal", label: "Journal" }, { href: "/account/orders", label: "My orders" }, { href: "/contact", label: "Contact" }, { href: "/information", label: "Ordering & payment" }].map(item => <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} aria-current={pathname === item.href ? "page" : undefined} className="flex min-h-11 items-center rounded-control px-3 py-2 hover:bg-indigo-50 dark:hover:bg-slate-800">{t(item.label)}</Link>)}</nav></Dialog>
+      <Dialog open={menuOpen} onOpenChange={setMenuOpen} title={t("Browse store")} className="storefront" drawer><nav className="grid gap-2">{[{ href: "/", label: "Home" }, { href: "/shop", label: "Shop" }, { href: "/cart", label: "Cart" }, { href: "/blog", label: "Blog" }, { href: "/account/orders", label: "My orders" }, { href: "/contact", label: "Contact" }, { href: "/information", label: "Ordering & payment" }].map(item => <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} aria-current={pathname === item.href ? "page" : undefined} className="flex min-h-11 items-center rounded-control px-3 py-2 hover:bg-indigo-50 dark:hover:bg-slate-800">{t(item.label)}</Link>)}</nav></Dialog>
     </div>
   );
 }
